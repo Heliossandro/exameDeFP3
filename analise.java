@@ -10,13 +10,13 @@ Data: 13.01.2025
 1. Objectivo: criar um sistema capaz de gerir os processos operacionais de uma perfumaria, incluindo o controle de estoque, vendas, fluxo de clientes, funcionários e fornecedores, permitindo a otimização da entrada e saída de produtos e dados.
 
 2. Visão [Interfaces Gráficas]
- - ApresentacaoInterface
  - Login   
  - MenuPrincipal
  - ProdutosInterface 
+ - FuncionariosInterface 
  - ClientesInterface 
- - VendasInterface 
- - EstoqueInterface 
+ - VendasInterface
+ - FornecedoresInterface
 
 3. Entidades Fortes e Seus Atributos (Modelo)
 
@@ -25,11 +25,10 @@ Data: 13.01.2025
    - String nome
    - String marca
    - double preco
-   - String categoria
+   - String categoria (Perfume, Creme, Óleo, etc.)
    - int quantidadeEmEstoque
    - String dataDeValidade
    - String observacao
-   - String fornecidor
 
    ClientesModelo
    - int id
@@ -38,6 +37,16 @@ Data: 13.01.2025
    - String email
    - char genero
    - String dataDeNascimento
+
+   FuncionariosModelo
+   - int id
+   - String nome
+   - String cargo
+   - String senha
+   - String numTelefone
+   - char genero
+   - String dataDeAdmissao
+   - Documento documento
 
    VendasModelo
    - int id
@@ -49,24 +58,20 @@ Data: 13.01.2025
    - String dataVenda
    - String metodoDePagamento
 
-   EstoqueModelo
+
+   FornecedoresModelo
    - int id
-   - ProdutosModelo produto
-   - int quantidade
-   - String dataAtualizacao
+   - String nome
+   - String contato
+   - String endereco
+   - String email
+   - String categoriaProduto
 
 4. Ficheiro
 
 5. Tabelas de Apoio (Auxiliares) = Entidades Fracas
   - CategoriaProdutos.tab 
   - MetodoDePagamento.tab
+  - Documento.tab
   - CargoFuncionarios.tab
-  - Fornecidores.tab
-
-6. Listagens e Pesquisas
-   - Listar produtos por categoria
-   - Listar vendas por período
-   - Pesquisar cliente por nome ou telefone
-   - Listar fornecedores por tipo de produto****
-   - Pesquisar funcionário por cargo***
 */
