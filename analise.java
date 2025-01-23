@@ -36,7 +36,7 @@ Data: 13.01.2025
    - String numTelefone
    - String email
    - char genero
-   - String dataDeNascimento
+   - Documento documento;
 
    FuncionariosModelo
    - int id
@@ -71,7 +71,5 @@ Data: 13.01.2025
 
 5. Tabelas de Apoio (Auxiliares) = Entidades Fracas
   - CategoriaProdutos.tab 
-  - MetodoDePagamento.tab
   - Documento.tab
-  - CargoFuncionarios.tab
 */

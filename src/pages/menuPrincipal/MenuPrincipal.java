@@ -2,9 +2,16 @@ package src.pages.menuPrincipal;
 
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
-import java.awt.*;
 
-public class MenuPrincipal extends JFrame {
+import src.pages.produto.ProdutoInterface;
+
+import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+
+public class MenuPrincipal extends JFrame implements ActionListener {
+
+    private JMenuItem adicionarProduto;
 
     public MenuPrincipal() {
         setTitle("Menu Principal - Gestão de Perfumaria");
@@ -45,8 +52,11 @@ public class MenuPrincipal extends JFrame {
 
         JMenu menuProduto = new JMenu("Produto");
         menuProduto.setForeground(Color.WHITE);
-        menuProduto.add(new JMenuItem("Adicionar Produto"));
+        adicionarProduto = new JMenuItem("Adicionar Produto");  // Inicializando a variável
+        adicionarProduto.addActionListener(this);  // Associando o ouvinte de ação
+        menuProduto.add(adicionarProduto);  // Adicionando ao menuProduto
         menuProduto.add(new JMenuItem("Listar Produtos"));
+
 
         JMenu menuCliente = new JMenu("Cliente");
         menuCliente.setForeground(Color.WHITE);
@@ -74,8 +84,18 @@ public class MenuPrincipal extends JFrame {
         menuBar.add(menuEstoque);
         menuBar.add(menuSobre);
 
+        adicionarProduto.addActionListener(this);
+
         return menuBar;
     }
+
+    public void actionPerformed(ActionEvent evt) {
+        if (evt.getSource() == adicionarProduto) {
+            ProdutoInterface produtoInterface = new ProdutoInterface();
+            produtoInterface.setVisible(true);  // Tornar a interface visível
+        }
+    }
+    
 
     private JPanel criarBloco(String titulo, String caminhoImagem) {
         // Painel para cada bloco
