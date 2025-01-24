@@ -29,6 +29,7 @@ Data: 13.01.2025
    - int quantidadeEmEstoque
    - String dataDeValidade
    - String observacao
+   - CategoriaProdutos categoriaProduto
 
    ClientesModelo
    - int id

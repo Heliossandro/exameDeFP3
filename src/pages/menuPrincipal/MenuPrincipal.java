@@ -3,6 +3,8 @@ package src.pages.menuPrincipal;
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
 
+import src.pages.CategoriaProduto.CategoriaProdutosInterface;
+import src.pages.documento.DocumentoInterface;
 import src.pages.produto.ProdutoInterface;
 
 import java.awt.*;
@@ -11,7 +13,7 @@ import java.awt.event.ActionListener;
 
 public class MenuPrincipal extends JFrame implements ActionListener {
 
-    private JMenuItem adicionarProduto;
+    private JMenuItem adicionarProduto, adicionarCategoria, adicionarDocumento;
 
     public MenuPrincipal() {
         setTitle("Menu Principal - Gestão de Perfumaria");
@@ -77,6 +79,12 @@ public class MenuPrincipal extends JFrame implements ActionListener {
         menuSobre.setForeground(Color.WHITE);
         menuSobre.add(new JMenuItem("Sobre o Sistema"));
         menuSobre.add(new JMenuItem("Ajuda"));
+        adicionarDocumento = new JMenuItem("Adicionar DOcumentos");
+        adicionarDocumento.addActionListener(this);  
+        menuSobre.add(adicionarDocumento); 
+        adicionarCategoria = new JMenuItem("Adicionar Categorias de produtos");
+        adicionarCategoria.addActionListener(this);  
+        menuSobre.add(adicionarCategoria); 
 
         menuBar.add(menuProduto);
         menuBar.add(menuCliente);
@@ -93,6 +101,16 @@ public class MenuPrincipal extends JFrame implements ActionListener {
         if (evt.getSource() == adicionarProduto) {
             ProdutoInterface produtoInterface = new ProdutoInterface();
             produtoInterface.setVisible(true);  // Tornar a interface visível
+        }
+
+        if( evt.getSource() == adicionarDocumento){
+            DocumentoInterface documentoInterface = new DocumentoInterface();
+            documentoInterface.setVisible(true);
+        }
+
+        if(evt.getSource() == adicionarCategoria){
+            CategoriaProdutosInterface categoriaProdutosInterface = new CategoriaProdutosInterface();
+            categoriaProdutosInterface.setVisible(true);
         }
     }
     

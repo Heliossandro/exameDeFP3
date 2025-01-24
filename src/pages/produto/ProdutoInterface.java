@@ -6,6 +6,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.Random;
 import src.models.ProdutoModelo;
+import src.models.CategoriaProdutoModelo;
 
 public class ProdutoInterface extends JFrame {
 
@@ -15,6 +16,7 @@ public class ProdutoInterface extends JFrame {
     public ProdutoInterface() {
         setTitle("Gestão de Produtos");
         setSize(800, 600);
+        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setLocationRelativeTo(null);
         configurarLayout();
     }
@@ -143,9 +145,12 @@ public class ProdutoInterface extends JFrame {
             String categoria = (String) categoriaComboBox.getSelectedItem();
             String observacao = observacaoField.getText();
 
+            // Cria a categoria do produto
+            CategoriaProdutoModelo categoriaProduto = new CategoriaProdutoModelo(id,categoria);
+
             // Cria o produto
             ProdutoModelo produto = new ProdutoModelo(
-                    id, quantidade, preco, nome, marca, categoria, validade, observacao, fornecedor
+                    id, quantidade, preco, nome, marca, validade, observacao, fornecedor, categoriaProduto
             );
 
             // Mostra uma mensagem de sucesso
@@ -171,5 +176,9 @@ public class ProdutoInterface extends JFrame {
         observacaoField.setText("");
         categoriaComboBox.setSelectedIndex(0);
         fornecedorComboBox.setSelectedIndex(0);
-    } 
+    }
+
+    public static void main(String[] args) {
+        SwingUtilities.invokeLater(() -> new ProdutoInterface().setVisible(true));
+    }
 }

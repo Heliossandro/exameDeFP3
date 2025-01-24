@@ -7,20 +7,19 @@ public class DocumentoModelo implements Serializable{
     private static final long serialVersionUID = 7915799766965423151L;
 
     private int id;
-    private StringBufferModelo documento;
+    private StringBufferModelo nome;
 
-
-    public DocumentoModelo(int id, String documento){
+    public DocumentoModelo(int id, String nome){
         this.id = id;
-        this.documento = new StringBufferModelo(documento);
+        this.nome = new StringBufferModelo(nome);
     }
 
     public int getId(){
         return id;
     }
 
-    public String getDocumento(){
-        return documento.get();
+    public String getNome(){
+        return nome.get();
     }
 
     //metodos set
@@ -28,7 +27,7 @@ public class DocumentoModelo implements Serializable{
         this.id = id;
     }
 
-    public void setDocumento(String documento){
-        this.documento.set(documento);
+    public void setNome(String nome){
+        this.nome.set(nome);
     }
 }

@@ -7,20 +7,19 @@ public class CategoriaProdutoModelo implements Serializable{
     private static final long serialVersionUID = 7915799766965423151L;
 
     private int id;
-    private StringBufferModelo categoriaProduto;
+    private StringBufferModelo nome;
 
-
-    public CategoriaProdutoModelo(int id, String categoriaProduto){
+    public CategoriaProdutoModelo(int id, String nome){
         this.id = id;
-        this.categoriaProduto = new StringBufferModelo(categoriaProduto);
+        this.nome = new StringBufferModelo(nome);
     }
 
     public int getId(){
         return id;
     }
 
-    public String getCategoriaProduto(){
-        return categoriaProduto.get();
+    public String getNome(){
+        return nome.get();
     }
 
     //metodos set
@@ -28,7 +27,7 @@ public class CategoriaProdutoModelo implements Serializable{
         this.id = id;
     }
 
-    public void setCategoriaProduto(String categoriaProduto){
-        this.categoriaProduto.set(categoriaProduto);
+    public void setNome(String nome){
+        this.nome.set(nome);
     }
 }
