@@ -1,17 +1,26 @@
 package src.pages.CategoriaProduto;
 
+import src.models.*;
+import src.DAO.AdicionarCategoriaDAO;
+
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.*;
+import java.util.List;
+import java.io.*;
 
 public class CategoriaProdutosInterface extends JFrame {
 
     private PainelSul sul;
     private PainelCentro centro;
-    private static int contadorId = 1; // Contador para geração de IDs infinitos
+    private static int contadorId;
+    private AdicionarCategoriaDAO dao = new AdicionarCategoriaDAO();
 
     public CategoriaProdutosInterface() {
         super("Categoria Dos Produtos");
+
+        // Inicializar contadorId com o valor salvo
+        contadorId = recuperarUltimoId();
 
         getContentPane().add(centro = new PainelCentro(), BorderLayout.CENTER);
         getContentPane().add(sul = new PainelSul(), BorderLayout.SOUTH);
@@ -21,12 +30,32 @@ public class CategoriaProdutosInterface extends JFrame {
         setVisible(true);
     }
 
+    private int recuperarUltimoId() {
+      List<CategoriaProdutoModelo> categoriaProduto = dao.getAll();
+      int maxId = 0;
+      for (DocumentoModelo cat : )
+    }
+
+    private void salvarUltimoId() {
+        try {
+            File pasta = new File("dat");
+            if (!pasta.exists()) {
+                pasta.mkdir(); // Cria a pasta se não existir
+            }
+            ObjectOutputStream oos = new ObjectOutputStream(new FileOutputStream("dat/Categoria.dat"));
+            oos.writeInt(contadorId);
+            oos.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
     class PainelCentro extends JPanel {
         private JTextField txtId;
-        private JTextField txtTipoDoDocumento;
+        private JTextField txtCategoria;
 
         public PainelCentro() {
-            setLayout(new GridBagLayout()); // Usa GridBagLayout para maior controle
+            setLayout(new GridBagLayout());
             setBorder(BorderFactory.createEmptyBorder(20, 20, 20, 20)); // Margem interna
             setBackground(new Color(245, 245, 245)); // Cor de fundo
 
@@ -41,7 +70,7 @@ public class CategoriaProdutosInterface extends JFrame {
             gbc.gridy = 0;
             add(lblId, gbc);
 
-            txtId = new JTextField(String.valueOf(contadorId++));
+            txtId = new JTextField(String.valueOf(contadorId));
             txtId.setEditable(false); // Torna o campo de ID somente leitura
             txtId.setFont(new Font("Arial", Font.BOLD, 14));
             txtId.setHorizontalAlignment(JTextField.CENTER);
@@ -57,17 +86,17 @@ public class CategoriaProdutosInterface extends JFrame {
             gbc.gridy = 1;
             add(lblCategoria, gbc);
 
-            txtTipoDoDocumento = new JTextField();
-            txtTipoDoDocumento.setFont(new Font("Arial", Font.PLAIN, 14));
-            txtTipoDoDocumento.setBorder(BorderFactory.createLineBorder(new Color(200, 200, 200), 1));
-            txtTipoDoDocumento.setPreferredSize(new Dimension(200, 30)); // Define largura e altura
+            txtCategoria = new JTextField();
+            txtCategoria.setFont(new Font("Arial", Font.PLAIN, 14));
+            txtCategoria.setBorder(BorderFactory.createLineBorder(new Color(200, 200, 200), 1));
+            txtCategoria.setPreferredSize(new Dimension(200, 30)); // Define largura e altura
             gbc.gridx = 1;
             gbc.gridy = 1;
-            add(txtTipoDoDocumento, gbc);
+            add(txtCategoria, gbc);
         }
 
         public String getCategoria() {
-            return txtTipoDoDocumento.getText();
+            return txtCategoria.getText();
         }
 
         public int getId() {
@@ -120,7 +149,11 @@ public class CategoriaProdutosInterface extends JFrame {
             if (evt.getSource() == btnSalvar) {
                 String categoria = centro.getCategoria();
                 int id = centro.getId();
+
                 JOptionPane.showMessageDialog(null, "ID: " + id + "\nCategoria: " + categoria, "Dados Salvos", JOptionPane.INFORMATION_MESSAGE);
+
+                contadorId++;
+                salvarUltimoId(); // Salvar o ID após incremento
             } else {
                 dispose();
             }

@@ -1,71 +1,182 @@
 package src.pages.cliente;
 
+import src.models.DocumentoModelo;
+import src.DAO.AdicionarDocmentosDAO;
+
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.*;
+import java.util.List;
 
 public class ClienteInterface extends JFrame {
     private PainelSul sul;
     private PainelCentro centro;
-
-    public ClienteInterface(){
+    
+    public ClienteInterface() {
         super("Cadastrar Clientes");
+        setLayout(new BorderLayout());
+        getContentPane().setBackground(new Color(240, 240, 240));
 
         getContentPane().add(centro = new PainelCentro(), BorderLayout.CENTER);
-        getContentPane().add( sul = new PainelSul(), BorderLayout.SOUTH);
+        getContentPane().add(sul = new PainelSul(), BorderLayout.SOUTH);
 
-        setSize(400, 300);
+        setSize(450, 400);
         setLocationRelativeTo(null);
         setVisible(true);
     }
 
-    class PainelCentro extends JPanel{
+    class PainelCentro extends JPanel {
         private JTextField txtNome, txtNumTelefone, txtEmail;
-        private JComboBox cbDocumentos;
-        private char genero;
+        private JComboBox<String> cbGenero;
+        private JComboBox<String> cbDocumentos;
 
-        public PainelCentro(){
-            setLayout( new GridLayout(8,2));
+        public PainelCentro() {
+            setLayout(new GridBagLayout());
+            setBorder(BorderFactory.createEmptyBorder(20, 20, 20, 20));
+            setBackground(Color.WHITE);
 
-            add(new JLabel("Nome"));
-            add(txtNome = new JTextField());
+            GridBagConstraints gbc = new GridBagConstraints();
+            gbc.insets = new Insets(10, 10, 10, 10);
+            gbc.fill = GridBagConstraints.HORIZONTAL;
 
-            add(new JLabel("Numero de telefone"));
-            add(txtNumTelefone = new JTextField());
+            // Nome
+            gbc.gridx = 0;
+            gbc.gridy = 0;
+            add(createLabel("Nome:"), gbc);
+            gbc.gridx = 1;
+            txtNome = createTextField();
+            add(txtNome, gbc);
 
-/*             add(new JLabel("Email"));
-            add(genero = new JTextField());
+            // Número de telefone
+            gbc.gridx = 0;
+            gbc.gridy = 1;
+            add(createLabel("Número de Telefone:"), gbc);
+            gbc.gridx = 1;
+            txtNumTelefone = createTextField();
+            add(txtNumTelefone, gbc);
 
-            add(new JLabel("Nome"));
-            add(txtNome = new JTextField()); */
+            // Email
+            gbc.gridx = 0;
+            gbc.gridy = 2;
+            add(createLabel("E-mail:"), gbc);
+            gbc.gridx = 1;
+            txtEmail = createTextField();
+            add(txtEmail, gbc);
 
+            // Gênero (ComboBox)
+            gbc.gridx = 0;
+            gbc.gridy = 3;
+            add(createLabel("Gênero:"), gbc);
+            gbc.gridx = 1;
+            String[] opcoesGenero = {"Masculino", "Feminino"};
+            cbGenero = createComboBox(opcoesGenero);
+            add(cbGenero, gbc);
 
+            // Documento (ComboBox)
+            gbc.gridx = 0;
+            gbc.gridy = 4;
+            add(createLabel("Documento:"), gbc);
+            gbc.gridx = 1;
+            cbDocumentos = createComboBox(carregarDocumentos());
+            add(cbDocumentos, gbc);
+        }
+
+        private String[] carregarDocumentos() {
+            AdicionarDocmentosDAO dao = new AdicionarDocmentosDAO();
+            List<DocumentoModelo> documentos = dao.getAll();
+            return documentos.stream().map(DocumentoModelo::getNome).toArray(String[]::new);
+        }
+
+        private JLabel createLabel(String text) {
+            JLabel label = new JLabel(text);
+            label.setFont(new Font("Arial", Font.BOLD, 14));
+            return label;
+        }
+
+        private JTextField createTextField() {
+            JTextField textField = new JTextField();
+            textField.setFont(new Font("Arial", Font.PLAIN, 14));
+            textField.setBorder(BorderFactory.createLineBorder(new Color(200, 200, 200), 1));
+            textField.setPreferredSize(new Dimension(200, 30));
+            return textField;
+        }
+
+        private JComboBox<String> createComboBox(String[] items) {
+            JComboBox<String> comboBox = new JComboBox<>(items);
+            comboBox.setFont(new Font("Arial", Font.PLAIN, 14));
+            comboBox.setBorder(BorderFactory.createLineBorder(new Color(200, 200, 200), 1));
+            return comboBox;
+        }
+
+        public String getNome() {
+            return txtNome.getText();
+        }
+
+        public String getNumTelefone() {
+            return txtNumTelefone.getText();
+        }
+
+        public String getEmail() {
+            return txtEmail.getText();
+        }
+
+        public char getGenero() {
+            return cbGenero.getSelectedItem().toString().charAt(0);
+        }
+
+        public String getDocumento() {
+            return cbDocumentos.getSelectedItem().toString();
         }
     }
 
-    class PainelSul extends JPanel implements ActionListener{
+    class PainelSul extends JPanel implements ActionListener {
         private JButton btnSalvar, btnCancelar;
-        
-        public PainelSul(){
-            setLayout(new FlowLayout());
 
-            add( btnSalvar = new JButton("Salvar"));
-            add( btnCancelar = new JButton("Cancelar"));
+        public PainelSul() {
+            setLayout(new FlowLayout(FlowLayout.CENTER, 10, 10));
+            setBackground(Color.WHITE);
 
-            btnSalvar.addActionListener(this);
-            btnCancelar.addActionListener(this);
+            btnSalvar = createButton("Salvar", new Color(0, 120, 215));
+            add(btnSalvar);
+
+            btnCancelar = createButton("Cancelar", new Color(200, 0, 0));
+            add(btnCancelar);
         }
 
-        public void actionPerformed(ActionEvent evt){
-            if(evt.getSource() == btnSalvar){
-                JOptionPane.showMessageDialog(null, "Salvar");
-            }else{
+        private JButton createButton(String text, Color color) {
+            JButton botao = new JButton(text);
+            botao.setFocusPainted(false);
+            botao.setBackground(color);
+            botao.setForeground(Color.WHITE);
+            botao.setFont(new Font("Arial", Font.BOLD, 14));
+            botao.setBorder(BorderFactory.createEmptyBorder(10, 20, 10, 20));
+            botao.setCursor(new Cursor(Cursor.HAND_CURSOR));
+            botao.addActionListener(this);
+            return botao;
+        }
+
+        public void actionPerformed(ActionEvent evt) {
+            if (evt.getSource() == btnSalvar) {
+                String nome = centro.getNome();
+                String telefone = centro.getNumTelefone();
+                String email = centro.getEmail();
+                char genero = centro.getGenero();
+                String documento = centro.getDocumento();
+
+                JOptionPane.showMessageDialog(null,
+                        "Nome: " + nome +
+                        "\nTelefone: " + telefone +
+                        "\nE-mail: " + email +
+                        "\nGênero: " + genero +
+                        "\nDocumento: " + documento,
+                        "Dados do Cliente", JOptionPane.INFORMATION_MESSAGE);
+            } else {
                 dispose();
             }
         }
     }
 
-    public static void main (String args[]){
+    public static void main(String args[]) {
         new ClienteInterface();
     }
 }
