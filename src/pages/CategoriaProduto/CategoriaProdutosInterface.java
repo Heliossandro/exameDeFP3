@@ -31,9 +31,14 @@ public class CategoriaProdutosInterface extends JFrame {
     }
 
     private int recuperarUltimoId() {
-      List<CategoriaProdutoModelo> categoriaProduto = dao.getAll();
+      List<CategoriaProdutoModelo> categoriaProdutos = dao.getAll();
       int maxId = 0;
-      for (DocumentoModelo cat : )
+      for (CategoriaProdutoModelo cat : categoriaProdutos){
+        if (cat.getId() > maxId) {
+            maxId = cat.getId();
+        }
+      }
+      return maxId + 1;
     }
 
     private void salvarUltimoId() {
