@@ -9,9 +9,14 @@ public class DocumentoModelo implements Serializable{
     private int id;
     private StringBufferModelo nome;
 
+    public DocumentoModelo(){
+        id = 0;
+		nome = new StringBufferModelo("", 50);
+    }
+
     public DocumentoModelo(int id, String nome){
         this.id = id;
-        this.nome = new StringBufferModelo(nome);
+        this.nome = new StringBufferModelo(nome, 50);
     }
 
     public int getId(){
@@ -19,7 +24,7 @@ public class DocumentoModelo implements Serializable{
     }
 
     public String getNome(){
-        return nome.get();
+        return nome.toStringEliminatingSpaces();
     }
 
     //metodos set
@@ -27,7 +32,7 @@ public class DocumentoModelo implements Serializable{
         this.id = id;
     }
 
-    public void setNome(String nome){
-        this.nome.set(nome);
+    public void setNome(String NewNome){
+        nome = new StringBufferModelo(NewNome, 50);
     }
 }

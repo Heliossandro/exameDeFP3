@@ -1,7 +1,7 @@
 package src.pages.documento;
 
 import src.models.DocumentoModelo;
-import src.DAO.AdicionarDocmentosDAO;
+import src.DAO.AdicionarDocumentosDAO;
 
 import javax.swing.*;
 import java.awt.*;
@@ -12,7 +12,7 @@ public class DocumentoInterface extends JFrame {
     private PainelSul sul;
     private PainelCentro centro;
     private static int contadorId;
-    private AdicionarDocmentosDAO dao = new AdicionarDocmentosDAO();
+    private AdicionarDocumentosDAO dao = new AdicionarDocumentosDAO();
 
     public DocumentoInterface() {
         super("Adicionar Documento");

@@ -1,7 +1,8 @@
 package src.pages.cliente;
 
+import src.models.ClienteModelo;
 import src.models.DocumentoModelo;
-import src.DAO.AdicionarDocmentosDAO;
+import src.DAO.AdicionarDocumentosDAO;
 
 import javax.swing.*;
 import java.awt.*;
@@ -82,7 +83,7 @@ public class ClienteInterface extends JFrame {
         }
 
         private String[] carregarDocumentos() {
-            AdicionarDocmentosDAO dao = new AdicionarDocmentosDAO();
+            AdicionarDocumentosDAO dao = new AdicionarDocumentosDAO();
             List<DocumentoModelo> documentos = dao.getAll();
             return documentos.stream().map(DocumentoModelo::getNome).toArray(String[]::new);
         }
@@ -109,15 +110,15 @@ public class ClienteInterface extends JFrame {
         }
 
         public String getNome() {
-            return txtNome.getText();
+            return txtNome.getText().trim();
         }
 
         public String getNumTelefone() {
-            return txtNumTelefone.getText();
+            return txtNumTelefone.getText().trim();
         }
 
         public String getEmail() {
-            return txtEmail.getText();
+            return txtEmail.getText().trim();
         }
 
         public char getGenero() {
@@ -174,6 +175,20 @@ public class ClienteInterface extends JFrame {
                 dispose();
             }
         }
+
+        public void salvar() {
+            String nome = centro.getNome();
+            String telefone = centro.getNumTelefone();
+            String email = centro.getEmail();
+            String genero = String.valueOf(centro.getGenero());
+        
+            ClienteModelo modelo = new ClienteModelo(0, nome, telefone, email, genero);
+        
+            // Salvando os dados
+            modelo.salvar();
+            JOptionPane.showMessageDialog(null, "Cliente salvo com sucesso!");
+        }
+                
     }
 
     public static void main(String args[]) {
