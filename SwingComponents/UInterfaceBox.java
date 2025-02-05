@@ -51,6 +51,11 @@ public abstract class UInterfaceBox
    return ComboBoxs;
   }
 
+protected static JComboBoxPersonal createJComboBoxsTabela2(String file) {
+    // TODO Auto-generated method stub
+    throw new UnsupportedOperationException("Unimplemented method 'createJComboBoxsTabela2'");
+}
+
   /*public static JComboBoxPersonal[] joinJComboBoxs(JComboBoxPersonal[] c1, JComboBoxPersonal c)
   {
    int  i = 0, sz1 = c1.length;

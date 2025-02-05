@@ -21,33 +21,25 @@ public class ClienteDadosTable extends AbstractHashTableCoalashed{
         return Math.abs(key.hashCode()) % tableSize;
     }
 
-    public SaveWriteReadInteface getNode(int tablePosition)
-   {
-    ClientePNode node = (ClientePNode)getEmptyNode();
-
-    long pos = getFilePosition( tablePosition );
-
-    try
-    {	
-        stream.seek( pos );
-
-        node.read( stream );
+    public SaveWriteReadInteface getNode(int tablePosition) {
+        ClientePNode node = (ClientePNode) getEmptyNode();
+        long pos = getFilePosition(tablePosition);
     
-        //se nome nao vazio
-        if ( node.isEmptyNode() == false )
-        {
-            return node;
+        try {	
+            stream.seek(pos);
+            node.read(stream);
+    
+            if (!node.isEmptyNode()) { // Verificação simplificada
+                return node;
+            }
+        } catch (Exception ex) {
+            ShowMessage.displayMessage("[GetNode] Falha no posicionamento do ficheiro " + fileName,
+            "ERROR", true);	
         }
-    }		
-    catch (Exception ex)
-    {
-        ShowMessage.displayMessage("[GetNode] Falha no posicionamento do ficheiro " + fileName,
-        "ERROR", true);	
+    
+        return null;
     }
-
-    return null;
- }
-
+    
  public ClientePNode getNode(String key) throws NullPointerException
 {		
     //calcula a posicao de entrada na tabela apartir da chave key
@@ -83,19 +75,19 @@ public static Vector getAllNodes()
 {
     Vector listaNodes = new Vector();
     
-    ClienteDadosTable hashCadaver = new ClienteDadosTable("clientes.DAT", 100);
+    ClienteDadosTable hashCliente = new ClienteDadosTable("clientes.DAT", 100);
     
     ClientePNode tmp = new ClientePNode();
         
-    hashCadaver.openFile();
+    hashCliente.openFile();
     
     try
     {
-        hashCadaver.stream.seek(8);
+        hashCliente.stream.seek(8);
         
-        for(int i=0; i < hashCadaver.tableSize; i++)
+        for(int i=0; i < hashCliente.tableSize; i++)
         {
-            tmp.read( hashCadaver.stream );
+            tmp.read( hashCliente.stream );
             
             if( !tmp.isEmptyNode()  )
             {
@@ -118,46 +110,33 @@ public static Vector getAllNodes()
 
 
 //adiciona na tabela e depois no ficheiro
-public void adicionarNovoCadaver(ClientePNode node)
-{
-    try
-    {
+public void adicionarNovoCliente(ClientePNode node) {
+    try {
         stream.seek(0);
-        
         int nTableSize = stream.readInt();
-        int nElements = stream.readInt();					
+        int nElements = stream.readInt();
 
-        
-        // Trata do ouverFlow da tabela a 80%
-        if ( (nElements + 1) / nTableSize >= 0.8 )
-            ouverFlowFile( nTableSize, nElements );
-    }
-    catch (Exception ex)
-    {
-        ShowMessage.displayMessage("Falha ao adicionar um aluno " + fileName, "ERROR", true);	
+        // Trata do overflow da tabela a 80%
+        if ((nElements + 1) / (double) nTableSize >= 0.8) { // Mudança no cálculo de proporção
+            ouverFlowFile(nTableSize, nElements);
+        }
+    } catch (Exception ex) {
+        ShowMessage.displayMessage("Falha ao adicionar um cliente " + fileName, "ERROR", true);	
     }
 
-     //calcula a posicao na tabela
-     int posTabela = calcularHashCode( node.getKey() );
+    int posTabela = calcularHashCode(node.getKey());
 
-     //se nao tiver nenhum elemento nesta posicao adiciona
-     if ( getNode( posTabela ) == null)
-              
-         adicionarNoFicheiro(node, posTabela); 
-    
-     //se tiver alguem e ele quiser sobrepor 
-     else if (getNode(posTabela).getKey().equalsIgnoreCase(node.getKey()))
-     {
-        if (JOptionPane.showConfirmDialog(null, "Este Registo ja existe Quer Sobrepor") == JOptionPane.YES_OPTION)
-            
+    if (getNode(posTabela) == null) {
+        adicionarNoFicheiro(node, posTabela);
+    } else if (getNode(posTabela).getKey().equalsIgnoreCase(node.getKey())) {
+        if (JOptionPane.showConfirmDialog(null, "Este Registo já existe. Deseja sobrepor?") == JOptionPane.YES_OPTION) {
             sobrePorRegisto(node, posTabela);
-        else
-            return;			 
-     }		 
-     else
-         //se houver colisao, colocar na lista de colisoes
-         adicionarNaListaColisoes(node, posTabela);
+        }
+    } else {
+        adicionarNaListaColisoes(node, posTabela);
+    }
 }
+
 
 
 // sobrepoem 1 registo
@@ -175,39 +154,30 @@ public void sobrePorRegisto(ClientePNode node, int posTabela)
 
 //segredo do projecto
 //adiciona na lista de colisoes
-public void adicionarNaListaColisoes(ClientePNode node, int lastColision)
-{		
-    ClientePNode no = (ClientePNode)getNode(lastColision);
-    
-     //se nao houver ninguem na lista, adicionar
-    if (no.getNext() == null && lastColision != tableSize - 1)
-    {			
+public void adicionarNaListaColisoes(ClientePNode node, int lastColision) {
+    ClientePNode no = (ClientePNode) getNode(lastColision);
+
+    if (no.getNext() == null && lastColision != tableSize - 1) {
         no.setNext(node);
         node.setPrev(no);
-    
-        adicionarNoFicheiro(node, tableSize - 1);				
-    }
-    else
-    {
+        adicionarNoFicheiro(node, tableSize - 1);
+    } else {
         ClientePNode tmp = no.getNext();
-    
-        //procura 1 espaco vazio apartir do fim
-        for (int i = tableSize - 1; i >= 0; --i)
-        {
-            if (tmp.getNext() == null) //se houver lugar vago adicionar
-            {
-                tmp.setNext(node);
-                node.setPrev(tmp);
-                //adiciona no fim da tabela se houver espaco
+
+        for (int i = tableSize - 1; i >= 0; --i) {
+            if (tmp == null || tmp.getNext() == null) { // Corrigida a condição de adição
+                if (tmp != null) {
+                    tmp.setNext(node);
+                    node.setPrev(tmp);
+                }
                 adicionarNoFicheiro(node, i);
                 return;
+            } else {
+                tmp = tmp.getNext();
             }
-            else
-                tmp = tmp.getNext();				
-        }	
+        }
     }
-}		
-
+}
 
 //calcula onde o fichiro deve se posicionar
 // para escrever o proximo registo
@@ -224,27 +194,25 @@ public SaveWriteReadInteface getEmptyNode()
 
 public static int getNextID()
 {
-    //ClienteDadosTable hashcliente = new ClienteDadosTable("clientes.DAT",100);
-    //return hashCadaver.getNextAutoId() + 1;
     
     return 1;
 }
-//
-public static void pesquisarCadaversPorGenero(String generoProcurado)
+
+public static void pesquisarClientesPorGenero(String generoProcurado)
 {
-    ClienteDadosTable hashCadaver = new ClienteDadosTable("clientes.DAT",100);
-    ClientePNode tmp = (ClientePNode)hashCadaver.getEmptyNode();
+    ClienteDadosTable hashCliente = new ClienteDadosTable("clientes.DAT",100);
+    ClientePNode tmp = (ClientePNode)hashCliente.getEmptyNode();
     String output = "\n";
     
     try
     {
-            hashCadaver.openFile();
+            hashCliente.openFile();
             
-            hashCadaver.stream.seek(8);
+            hashCliente.stream.seek(8);
             
-            for(int i = 0; i < hashCadaver.tableSize;++i)
+            for(int i = 0; i < hashCliente.tableSize;++i)
             {
-                tmp.read(hashCadaver.stream);
+                tmp.read(hashCliente.stream);
                 
                 if(!tmp.getKey().equals(""))
                 {						
@@ -273,21 +241,21 @@ public static void pesquisarCadaversPorGenero(String generoProcurado)
 }
 
 /*Listar os dados dos alunos numa comboBox*/
-public static void listarCadavers()
+public static void listarClientes()
 {
-    ClienteDadosTable hashCadaver = new ClienteDadosTable("clientes.DAT",100);
-    ClientePNode tmp = (ClientePNode)hashCadaver.getEmptyNode();
+    ClienteDadosTable hashCliente = new ClienteDadosTable("clientes.DAT",100);
+    ClientePNode tmp = (ClientePNode)hashCliente.getEmptyNode();
     String output = "\n";
     
     try
     {
-            hashCadaver.openFile();
+            hashCliente.openFile();
             
-            hashCadaver.stream.seek(8);
+            hashCliente.stream.seek(8);
             
-            for(int i = 0; i < hashCadaver.tableSize;++i)
+            for(int i = 0; i < hashCliente.tableSize;++i)
             {
-                tmp.read(hashCadaver.stream);
+                tmp.read(hashCliente.stream);
                 
                 if(!tmp.getKey().equals(""))
                 {						
@@ -312,12 +280,66 @@ public static void listarCadavers()
     
 }
 
+public void reHashFile(int nTableSize) {
+    try {
+        // Mover o ponteiro para o início do arquivo
+        stream.seek(0);
 
-//888888888888888888888888888888
-public void reHashFile(int nTableSize)
-{
-    //implementar o reHash
+        int oldTableSize = stream.readInt();
+        int oldElements = stream.readInt();
+
+        // Novo tamanho da tabela (pode-se usar um número primo)
+        int newTableSize = getNextPrime(nTableSize * 2);
+
+        // Criar uma nova tabela temporária em memória
+        ClientePNode[] tempNodes = new ClientePNode[oldElements];
+
+        // Ler todos os registros existentes
+        int index = 0;
+        for (int i = 0; i < oldTableSize; i++) {
+            SaveWriteReadInteface node = getNode(i);
+            if (node != null) {
+                tempNodes[index++] = (ClientePNode) node;
+            }
+        }
+
+        // Limpar e reescrever a estrutura com o novo tamanho
+        stream.setLength(0); // Apaga o conteúdo do arquivo
+        stream.seek(0);
+        stream.writeInt(newTableSize); // Novo tamanho da tabela
+        stream.writeInt(0); // Reiniciar número de elementos
+
+        // Reinserir cada elemento com novo cálculo de hash
+        for (ClientePNode node : tempNodes) {
+            if (node != null) {
+                adicionarNovoCliente(node);
+            }
+        }
+
+        ShowMessage.displayMessage("Rehash concluído com sucesso!", "INFO", false);
+
+    } catch (Exception e) {
+        ShowMessage.displayMessage("Erro ao realizar o rehash: " + e.getMessage(), "ERROR", true);
+    }
 }
+
+// Função auxiliar para obter o próximo número primo
+private int getNextPrime(int n) {
+    while (!isPrime(n)) {
+        n++;
+    }
+    return n;
+}
+
+// Função auxiliar para verificar se um número é primo
+private boolean isPrime(int n) {
+    if (n < 2) return false;
+    for (int i = 2; i <= Math.sqrt(n); i++) {
+        if (n % i == 0) return false;
+    }
+    return true;
+}
+
 
 @Override
 public int calcularHashCodeReHashing(String key) {

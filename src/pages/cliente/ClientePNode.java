@@ -28,10 +28,9 @@ public class ClientePNode extends ClienteDadosTable implements SaveWriteReadInte
       return model.getNome();
   }
   
-  public boolean isEmptyNode()
-  {
-      return ( getKey().equalsIgnoreCase("") == true );
-  }
+  public boolean isEmptyNode() {
+    return getKey().trim().isEmpty();
+}
 
   public void write(RandomAccessFile stream) throws IOException
   {
@@ -70,26 +69,22 @@ public class ClientePNode extends ClienteDadosTable implements SaveWriteReadInte
       return prev;
   }
   
-  public void save()
-  {
-    adicionarNovoCadaver(this);
-  }
+  public void save() {
+    if (!isEmptyNode()) {
+        adicionarNovoCliente(this);
+    } else {
+        System.out.println("Não foi possível salvar: Cliente inválido.");
+    }
+}
+
  
-  public static long sizeof()
-  {		
-      ClientePNode node = new ClientePNode();
-      try
-      { 
-          return  node.model.sizeof();
-      }
-      catch(Exception e)
-      {
-          e.printStackTrace();
-      }
-      return 0;
-   }	
-   public String toString()
-   {
-      return model.toString();
-   }
+  public static long sizeof() 
+  {
+    return new ClienteModelo().sizeof();
+  }
+
+  @Override
+  public String toString() {
+      return "Cliente: " + model.getNome() + ", Telefone: " + model.getNumTelefone();
+  }  
 }

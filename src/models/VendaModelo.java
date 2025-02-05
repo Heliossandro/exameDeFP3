@@ -10,15 +10,15 @@ public class VendaModelo implements Serializable{
     private ProdutoModelo produto;
     private ClienteModelo cliente;
     private StringBufferModelo dataVenda, metodoDePagamento;
-    private double total;
+    private float total;
 
-    public VendaModelo(int id,int quantidade, String dataVenda,ProdutoModelo produto,ClienteModelo cliente, String metodoDePagamento, double total){
+    public VendaModelo(int id,int quantidade, String dataVenda,ProdutoModelo produto,ClienteModelo cliente, String metodoDePagamento, float total){
         this.id = id; 
         this.quantidade = quantidade;
         this.produto = produto;
         this.cliente = cliente;
-        this.dataVenda = new StringBufferModelo(dataVenda);
-        this.metodoDePagamento = new StringBufferModelo(metodoDePagamento);
+        this.dataVenda = new StringBufferModelo(dataVenda,50);
+        this.metodoDePagamento = new StringBufferModelo(metodoDePagamento,50);
         this.total = total;
     }
 
@@ -39,14 +39,14 @@ public class VendaModelo implements Serializable{
     }
 
     public String getDataVenda(){
-        return dataVenda.get();
+        return dataVenda.toStringEliminatingSpaces();
     }
 
     public String getMetodoDePagamento(){
-        return metodoDePagamento.get();
+        return metodoDePagamento.toStringEliminatingSpaces();
     }
 
-    public double getTotal(){
+    public float getTotal(){
         return total;
     }
 
@@ -67,15 +67,15 @@ public class VendaModelo implements Serializable{
         this.cliente = cliente;
     }
 
-    public void setDataVenda(String dataVenda){
-        this.dataVenda.set(dataVenda);
+    public void setDataVenda(String NewDataVenda){
+        dataVenda = new StringBufferModelo(NewDataVenda, 50);
     }
 
-    public void setMetodoDePagamento(String numTelfone){
-         this.metodoDePagamento.set(numTelfone);
+    public void setMetodoDePagamento(String NewNumTelfone){
+        metodoDePagamento = new StringBufferModelo(NewNumTelfone,50);
     }
 
-    public void setTotal(double total){
+    public void setTotal(float total){
         this.total = total;
     }
 }

@@ -1,10 +1,9 @@
 package src.models;
 
 import java.io.Serializable;
-import src.components.utils.StringBufferModelo;
 
+import src.components.utils.StringBufferModelo;
 public class EstoqueModelo implements Serializable{
-    private static final long serialVersionUID = 7915799766965423151L;
 
     private int id, quantidade;
     private ProdutoModelo produto;
@@ -14,7 +13,7 @@ public class EstoqueModelo implements Serializable{
         this.id = id;
         this.quantidade = quantidade;
         this.produto = produto; 
-        this.dataAtualizacao = new StringBufferModelo(dataAtualizacao);
+        this.dataAtualizacao = new StringBufferModelo(dataAtualizacao, 50);
     }
 
     public int getId(){
@@ -30,7 +29,7 @@ public class EstoqueModelo implements Serializable{
     }
 
     public String getdataAtualizacao(){
-        return dataAtualizacao.get();
+        return dataAtualizacao.toStringEliminatingSpaces();
     }
 
     //metodos set
@@ -46,7 +45,7 @@ public class EstoqueModelo implements Serializable{
         this.produto = produto;
     }
 
-    public void setDataAtualizacao(String dataAtualizacao){
-        this.dataAtualizacao.set(dataAtualizacao);
+    public void setDataAtualizacao(String NewDataAtualizacao){
+        dataAtualizacao = new StringBufferModelo(NewDataAtualizacao, 50);
     }
 }

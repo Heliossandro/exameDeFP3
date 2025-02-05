@@ -11,6 +11,7 @@ import java.util.List;
 
 public class ClienteInterface extends JFrame {
     private PainelSul sul;
+    private static int contadorId;
     private PainelCentro centro;
     
     public ClienteInterface() {
@@ -27,6 +28,7 @@ public class ClienteInterface extends JFrame {
     }
 
     class PainelCentro extends JPanel {
+
         private JTextField txtNome, txtNumTelefone, txtEmail;
         private JComboBox<String> cbGenero;
         private JComboBox<String> cbDocumentos;
@@ -171,6 +173,7 @@ public class ClienteInterface extends JFrame {
                         "\nGênero: " + genero +
                         "\nDocumento: " + documento,
                         "Dados do Cliente", JOptionPane.INFORMATION_MESSAGE);
+                        salvar();
             } else {
                 dispose();
             }
