@@ -1,4 +1,4 @@
-package RSComponents;
+package SwingComponents;
 /***********************************
 Nome: Osvaldo Manuel Ramos
 N. 2817
@@ -49,6 +49,11 @@ public abstract class UInterfaceBox
    for (int i = 1; i <= sz; i++)
        ComboBoxs[i] = c2[i - 1];
    return ComboBoxs;
+  }
+
+  public static JComboBoxPersonal createJComboBoxsTabela2(String fileFather) {
+    // TODO Auto-generated method stub
+    throw new UnsupportedOperationException("Unimplemented method 'createJComboBoxsTabela2'");
   }
 
   /*public static JComboBoxPersonal[] joinJComboBoxs(JComboBoxPersonal[] c1, JComboBoxPersonal c)

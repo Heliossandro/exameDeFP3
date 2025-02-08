@@ -13,7 +13,7 @@ public class ClienteModelo implements RegistGeneric {
     private static int contadorId = 1; // Gerador automático de IDs
 
     public ClienteModelo() {
-        this.id = gerarNovoId();
+        this.id = 0;
         nome = new StringBufferModelo("", 50);
         numTelefone = new StringBufferModelo("", 50);
         email = new StringBufferModelo("", 50);
@@ -26,10 +26,6 @@ public class ClienteModelo implements RegistGeneric {
         this.numTelefone = new StringBufferModelo(numeTelefone, 50);
         this.email = new StringBufferModelo(email, 50);
         this.genero = new StringBufferModelo(genero, 20);
-    }
-
-    private static int gerarNovoId() {
-        return contadorId++;
     }
 
     public int getId() {

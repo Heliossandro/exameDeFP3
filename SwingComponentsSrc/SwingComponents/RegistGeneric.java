@@ -1,4 +1,4 @@
-package RSComponents;
+package SwingComponents;
 /***********************************
 Nome: Osvaldo Manuel Ramos
 N. 2817

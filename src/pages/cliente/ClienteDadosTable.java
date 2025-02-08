@@ -25,90 +25,66 @@ public class ClienteDadosTable extends AbstractHashTableCoalashed{
         ClientePNode node = (ClientePNode) getEmptyNode();
         long pos = getFilePosition(tablePosition);
     
-        try {	
+        try {    
             stream.seek(pos);
             node.read(stream);
     
-            if (!node.isEmptyNode()) { // Verificação simplificada
+            if (!node.isEmptyNode()) {
                 return node;
             }
         } catch (Exception ex) {
-            ShowMessage.displayMessage("[GetNode] Falha no posicionamento do ficheiro " + fileName,
-            "ERROR", true);	
+            ex.printStackTrace(); // Adicionado para identificar erros
+            ShowMessage.displayMessage("[GetNode] Falha ao ler o arquivo " + fileName, "ERROR", true);
         }
     
         return null;
+    }    
+    
+    public ClientePNode getNode(String key) {
+        int tablePosition = calcularHashCode(key);
+        ClientePNode tmp = (ClientePNode) getNode(tablePosition);
+    
+        while (tmp != null) { // Evita acessar null
+            if (tmp.getKey().equalsIgnoreCase(key)) {
+                return tmp;
+            }
+            tmp = tmp.getNext();
+        }
+        return null; // Se não encontrar, retorna null
     }
+
+    public static boolean exists(String key) {
+        ClienteDadosTable table = new ClienteDadosTable("clientes.DAT", 100);
+        ClientePNode tmp = table.getNode(key);
     
- public ClientePNode getNode(String key) throws NullPointerException
-{		
-    //calcula a posicao de entrada na tabela apartir da chave key
-    int tablePosition = calcularHashCode( key );
-
-    ClientePNode tmp = (ClientePNode)getNode( tablePosition );
-
-        if (tmp != null)
-        {
-            while ( !tmp.getKey().equalsIgnoreCase(""))
-            {
-                    if ( tmp.getKey().equalsIgnoreCase( key ) )
-                            return tmp;
-
-                    tmp = tmp.getNext();
-            }			
-        }		
-    return tmp;
-}
-
-public static boolean exists(String key)
-{
-    ClienteDadosTable table = new ClienteDadosTable("clientes.DAT", 100);
-    
-    ClientePNode tmp = table.getNode(key);
-    
-    return !tmp.isEmptyNode();
-}
+        return (tmp != null && !tmp.isEmptyNode());
+    }
 
 
  
-public static Vector getAllNodes()
-{
-    Vector listaNodes = new Vector();
+    public static Vector<String> getAllNodes() {
+        Vector<String> listaNodes = new Vector<>();
+        ClienteDadosTable hashCliente = new ClienteDadosTable("clientes.DAT", 100);
+        ClientePNode tmp = new ClientePNode();
     
-    ClienteDadosTable hashCliente = new ClienteDadosTable("clientes.DAT", 100);
+        hashCliente.openFile();
     
-    ClientePNode tmp = new ClientePNode();
-        
-    hashCliente.openFile();
+        try {
+            hashCliente.stream.seek(8);
+            for (int i = 0; i < hashCliente.tableSize; i++) {
+                tmp.read(hashCliente.stream);
     
-    try
-    {
-        hashCliente.stream.seek(8);
-        
-        for(int i=0; i < hashCliente.tableSize; i++)
-        {
-            tmp.read( hashCliente.stream );
-            
-            if( !tmp.isEmptyNode()  )
-            {
-                listaNodes.addElement(tmp.getKey());
-                System.out.println( tmp.getModel().getNome() );
+                if (!tmp.isEmptyNode()) {
+                    listaNodes.addElement(tmp.getKey());
+                }
             }
-            else
-                System.out.println(i);
+        } catch (Exception ex) {
+            ex.printStackTrace(); // Mostra o erro real no console
         }
-    }
-    catch(Exception ex)
-    {
-        System.out.println("corpodadostables.java");
+        
+        return listaNodes;
     }
     
-    return listaNodes;
-}
-
-
-
-
 //adiciona na tabela e depois no ficheiro
 public void adicionarNovoCliente(ClientePNode node) {
     try {

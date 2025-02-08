@@ -29,7 +29,7 @@ public class ClienteInterface extends JFrame {
 
     class PainelCentro extends JPanel {
 
-        private JTextField txtNome, txtNumTelefone, txtEmail;
+        private JTextField txtId, txtNome, txtNumTelefone, txtEmail;
         private JComboBox<String> cbGenero;
         private JComboBox<String> cbDocumentos;
 
@@ -42,9 +42,20 @@ public class ClienteInterface extends JFrame {
             gbc.insets = new Insets(10, 10, 10, 10);
             gbc.fill = GridBagConstraints.HORIZONTAL;
 
-            // Nome
+
+            // ID
             gbc.gridx = 0;
             gbc.gridy = 0;
+            add(createLabel("ID:"), gbc);
+            gbc.gridx = 1;
+            txtId = createTextField();
+            txtId.setEditable(false); // Para evitar edição manual
+            txtId.setText(String.valueOf(ClienteDadosTable.getNextID())); // Certifique-se de que ClienteDadosTable existe
+            add(txtId, gbc);
+
+            // Nome
+            gbc.gridx = 0;
+            gbc.gridy = 1;
             add(createLabel("Nome:"), gbc);
             gbc.gridx = 1;
             txtNome = createTextField();
@@ -52,7 +63,7 @@ public class ClienteInterface extends JFrame {
 
             // Número de telefone
             gbc.gridx = 0;
-            gbc.gridy = 1;
+            gbc.gridy = 2;
             add(createLabel("Número de Telefone:"), gbc);
             gbc.gridx = 1;
             txtNumTelefone = createTextField();
@@ -60,7 +71,7 @@ public class ClienteInterface extends JFrame {
 
             // Email
             gbc.gridx = 0;
-            gbc.gridy = 2;
+            gbc.gridy = 3;
             add(createLabel("E-mail:"), gbc);
             gbc.gridx = 1;
             txtEmail = createTextField();
@@ -68,7 +79,7 @@ public class ClienteInterface extends JFrame {
 
             // Gênero (ComboBox)
             gbc.gridx = 0;
-            gbc.gridy = 3;
+            gbc.gridy = 4;
             add(createLabel("Gênero:"), gbc);
             gbc.gridx = 1;
             String[] opcoesGenero = {"Masculino", "Feminino"};
@@ -77,7 +88,7 @@ public class ClienteInterface extends JFrame {
 
             // Documento (ComboBox)
             gbc.gridx = 0;
-            gbc.gridy = 4;
+            gbc.gridy = 5;
             add(createLabel("Documento:"), gbc);
             gbc.gridx = 1;
             cbDocumentos = createComboBox(carregarDocumentos());
@@ -111,6 +122,10 @@ public class ClienteInterface extends JFrame {
             return comboBox;
         }
 
+        public int getId()
+		{
+			return Integer.parseInt( txtId.getText() );
+		}
         public String getNome() {
             return txtNome.getText().trim();
         }
@@ -180,18 +195,21 @@ public class ClienteInterface extends JFrame {
         }
 
         public void salvar() {
+            
+            int id = centro.getId();
             String nome = centro.getNome();
             String telefone = centro.getNumTelefone();
             String email = centro.getEmail();
             String genero = String.valueOf(centro.getGenero());
         
-            ClienteModelo modelo = new ClienteModelo(0, nome, telefone, email, genero);
+            ClienteModelo modelo = new ClienteModelo(id, nome, telefone, email, genero);
         
             // Salvando os dados
             modelo.salvar();
             JOptionPane.showMessageDialog(null, "Cliente salvo com sucesso!");
-        }
-                
+        } 
+
+       
     }
 
     public static void main(String args[]) {

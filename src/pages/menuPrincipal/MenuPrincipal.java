@@ -3,9 +3,10 @@ package src.pages.menuPrincipal;
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
 
-import src.pages.CategoriaProduto.CategoriaProdutosInterface;
-import src.pages.documento.DocumentoInterface;
-import src.pages.produto.ProdutoInterface;
+import src.pages.CategoriaProduto.*;
+import src.pages.documento.*;
+import src.pages.produto.*;
+import src.pages.cliente.*;
 
 import java.awt.*;
 import java.awt.event.ActionEvent;
@@ -13,7 +14,7 @@ import java.awt.event.ActionListener;
 
 public class MenuPrincipal extends JFrame implements ActionListener {
 
-    private JMenuItem adicionarProduto, adicionarCategoria, adicionarDocumento;
+    private JMenuItem adicionarCliente, adicionarProduto, adicionarCategoria, adicionarDocumento, pesquisarClientesPorNome;
 
     public MenuPrincipal() {
         setTitle("Menu Principal - Gestão de Perfumaria");
@@ -54,16 +55,28 @@ public class MenuPrincipal extends JFrame implements ActionListener {
 
         JMenu menuProduto = new JMenu("Produto");
         menuProduto.setForeground(Color.WHITE);
-        adicionarProduto = new JMenuItem("Adicionar Produto");  // Inicializando a variável
-        adicionarProduto.addActionListener(this);  // Associando o ouvinte de ação
-        menuProduto.add(adicionarProduto);  // Adicionando ao menuProduto
+        
+        adicionarProduto = new JMenuItem("Adicionar Produto");
+        adicionarProduto.addActionListener(this); 
+        menuProduto.add(adicionarProduto); 
+        
         menuProduto.add(new JMenuItem("Listar Produtos"));
 
 
         JMenu menuCliente = new JMenu("Cliente");
         menuCliente.setForeground(Color.WHITE);
-        menuCliente.add(new JMenuItem("Cadastrar Cliente"));
+
         menuCliente.add(new JMenuItem("Listar Clientes"));
+
+        // Adicionar Cliente
+        adicionarCliente = new JMenuItem("Cadastrar Cliente");
+        adicionarCliente.addActionListener(this);
+        menuCliente.add(adicionarCliente);
+          
+        // pesquisar cliente por nome
+        pesquisarClientesPorNome = new JMenuItem("Pesquisar clientes por nome");
+        pesquisarClientesPorNome.addActionListener(this);
+        menuCliente.add(pesquisarClientesPorNome);
 
         JMenu menuVenda = new JMenu("Venda");
         menuVenda.setForeground(Color.WHITE);
@@ -100,7 +113,7 @@ public class MenuPrincipal extends JFrame implements ActionListener {
     public void actionPerformed(ActionEvent evt) {
         if (evt.getSource() == adicionarProduto) {
             ProdutoInterface produtoInterface = new ProdutoInterface();
-            produtoInterface.setVisible(true);  // Tornar a interface visível
+            produtoInterface.setVisible(true);  
         }
 
         if( evt.getSource() == adicionarDocumento){
@@ -112,6 +125,17 @@ public class MenuPrincipal extends JFrame implements ActionListener {
             CategoriaProdutosInterface categoriaProdutosInterface = new CategoriaProdutosInterface();
             categoriaProdutosInterface.setVisible(true);
         }
+
+        if(evt.getSource() == pesquisarClientesPorNome){
+            PesquisarClientesPorNome pesquisarClientesPorNome = new PesquisarClientesPorNome();
+            pesquisarClientesPorNome.setVisible(true);
+        }
+
+        if(evt.getSource() == adicionarCliente){
+            ClienteInterface clienteInterface = new ClienteInterface();
+            clienteInterface.setVisible(true);
+        }
+
     }
     
 
