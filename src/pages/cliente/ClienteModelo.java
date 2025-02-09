@@ -1,23 +1,23 @@
-package src.models;
+package src.pages.cliente;
+
+
 
 import java.io.IOException;
 import java.io.RandomAccessFile;
 import src.components.utils.StringBufferModelo;
-import src.pages.cliente.ClientePNode;
 import SwingComponents.*;
 
 public class ClienteModelo implements RegistGeneric {
 
     private int id;
     private StringBufferModelo nome, numTelefone, email, genero;
-    private static int contadorId = 1; // Gerador automático de IDs
 
     public ClienteModelo() {
         this.id = 0;
         nome = new StringBufferModelo("", 50);
         numTelefone = new StringBufferModelo("", 50);
         email = new StringBufferModelo("", 50);
-        genero = new StringBufferModelo("", 20);
+        genero = new StringBufferModelo("", 10);
     }
 
     public ClienteModelo(int id, String nome, String numeTelefone, String email, String genero) {
@@ -25,7 +25,7 @@ public class ClienteModelo implements RegistGeneric {
         this.nome = new StringBufferModelo(nome, 50);
         this.numTelefone = new StringBufferModelo(numeTelefone, 50);
         this.email = new StringBufferModelo(email, 50);
-        this.genero = new StringBufferModelo(genero, 20);
+        this.genero = new StringBufferModelo(genero, 10);
     }
 
     public int getId() {
@@ -66,25 +66,41 @@ public class ClienteModelo implements RegistGeneric {
     }
 
     public void setGenero(String newGenero) {
-        genero = new StringBufferModelo(newGenero, 20);
+        genero = new StringBufferModelo(newGenero, 10);
     }
+
+    public String toString()
+	{
+		String str = "Dados do Cliente no Modelo\n\n";
+		
+		str += "ID: " + getId() + "\n";
+		str += "Nome: " + getNome() + "\n";
+		str += "Genero: " + getGenero() + "\n";
+		str += "Numero de Telefone: " + getNumTelefone() + "\n";
+		str += "Email: " + getEmail() + "\n";
+		
+		return str;
+	}
+
 
     public long sizeof() {
-        return 296;
-    }
-
-    public boolean validarDados() {
-        return !getNome().isEmpty() && !getNumTelefone().isEmpty() &&
-               getEmail().contains("@") && !getGenero().isEmpty();
+        try
+        {
+            return (50+50+50+10)*2+4;// 324 bytes, qualquer coisa usa a formula
+        }
+        catch(Exception ex)
+        {
+            return 0;
+        }
     }
 
     public void write(RandomAccessFile stream) {
         try {
             stream.writeInt(id);
             nome.write(stream);
+            genero.write(stream);
             numTelefone.write(stream);
             email.write(stream);
-            genero.write(stream);
         } catch (IOException ex) {
             ex.printStackTrace();
         }
@@ -94,17 +110,19 @@ public class ClienteModelo implements RegistGeneric {
         try {
             id = stream.readInt();
             nome.read(stream);
+            genero.read(stream); // a sequencia que colocas aqui tem que ser a mesma da funcao toString
             numTelefone.read(stream);
             email.read(stream);
-            genero.read(stream);
         } catch (IOException ex) {
             ex.printStackTrace();
         }
     }
 
     public void salvar() {
+	//ele vai guardar tambem no ficheiro antigo para gerar apenas o id automatico
+	new ClienteFile().salvarDados(this);
         // faz-se a ligação entre o modelo e o PNode
-        ClientePNode node = new ClientePNode(this);
+        ClientesPNode node = new ClientesPNode(this);
         node.save();
     }
 }

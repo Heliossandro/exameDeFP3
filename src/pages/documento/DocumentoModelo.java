@@ -1,7 +1,6 @@
-package src.models;
+package src.pages.documento;
 
 import java.io.Serializable;
-import src.components.utils.StringBufferModelo;
 
 public class DocumentoModelo implements Serializable{
     private static final long serialVersionUID = 7915799766965423151L;
@@ -11,12 +10,12 @@ public class DocumentoModelo implements Serializable{
 
     public DocumentoModelo(){
         id = 0;
-		nome = new StringBufferModelo("", 50);
+		nome = new StringBufferModelo("");
     }
 
     public DocumentoModelo(int id, String nome){
         this.id = id;
-        this.nome = new StringBufferModelo(nome, 50);
+        this.nome = new StringBufferModelo(nome);
     }
 
     public int getId(){
@@ -24,7 +23,7 @@ public class DocumentoModelo implements Serializable{
     }
 
     public String getNome(){
-        return nome.toStringEliminatingSpaces();
+        return nome.get();
     }
 
     //metodos set
@@ -32,7 +31,7 @@ public class DocumentoModelo implements Serializable{
         this.id = id;
     }
 
-    public void setNome(String NewNome){
-        nome = new StringBufferModelo(NewNome, 50);
+    public void setNome(String nome){
+        this.nome.set(nome);
     }
 }

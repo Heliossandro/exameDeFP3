@@ -2,7 +2,6 @@ package src.pages.menuPrincipal;
 
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
-
 import src.pages.CategoriaProduto.*;
 import src.pages.documento.*;
 import src.pages.produto.*;
@@ -14,7 +13,8 @@ import java.awt.event.ActionListener;
 
 public class MenuPrincipal extends JFrame implements ActionListener {
 
-    private JMenuItem adicionarCliente, adicionarProduto, adicionarCategoria, adicionarDocumento, pesquisarClientesPorNome;
+    private JMenuItem adicionarCliente, adicionarProduto, adicionarCategoria, adicionarDocumento, pesquisarClientesPorNome, listarClientes,
+                        listarProduto, pesquisarProduto, adicionarEstoque, listarEstoque;
 
     public MenuPrincipal() {
         setTitle("Menu Principal - Gestão de Perfumaria");
@@ -60,8 +60,8 @@ public class MenuPrincipal extends JFrame implements ActionListener {
         adicionarProduto.addActionListener(this); 
         menuProduto.add(adicionarProduto); 
         
-        menuProduto.add(new JMenuItem("Listar Produtos"));
-
+        menuProduto.add(listarProduto = new JMenuItem("Listar Produtos"));
+        listarProduto.addActionListener(this);
 
         JMenu menuCliente = new JMenu("Cliente");
         menuCliente.setForeground(Color.WHITE);
@@ -77,6 +77,10 @@ public class MenuPrincipal extends JFrame implements ActionListener {
         pesquisarClientesPorNome = new JMenuItem("Pesquisar clientes por nome");
         pesquisarClientesPorNome.addActionListener(this);
         menuCliente.add(pesquisarClientesPorNome);
+
+        listarClientes = new JMenuItem("Listar Clientes");
+        listarClientes.addActionListener(this);
+        menuCliente.add(listarClientes);
 
         JMenu menuVenda = new JMenu("Venda");
         menuVenda.setForeground(Color.WHITE);
@@ -112,8 +116,8 @@ public class MenuPrincipal extends JFrame implements ActionListener {
 
     public void actionPerformed(ActionEvent evt) {
         if (evt.getSource() == adicionarProduto) {
-            ProdutoInterface produtoInterface = new ProdutoInterface();
-            produtoInterface.setVisible(true);  
+            ProdutoVisao produtoVisao = new ProdutoVisao();
+            produtoVisao.setVisible(true);  
         }
 
         if( evt.getSource() == adicionarDocumento){
@@ -126,18 +130,28 @@ public class MenuPrincipal extends JFrame implements ActionListener {
             categoriaProdutosInterface.setVisible(true);
         }
 
-        if(evt.getSource() == pesquisarClientesPorNome){
-            PesquisarClientesPorNome pesquisarClientesPorNome = new PesquisarClientesPorNome();
-            pesquisarClientesPorNome.setVisible(true);
+        if (evt.getSource() == pesquisarClientesPorNome) {
+            String nome = JOptionPane.showInputDialog("Digite o nome do cliente:");
+            if (nome != null && !nome.trim().isEmpty()) {
+                PesquisarPorNomeCliente.pesquisarPorNomeCliente(nome.trim()); // Chamada correta
+            } else {
+                JOptionPane.showMessageDialog(null, "Nome inválido!", "Aviso", JOptionPane.WARNING_MESSAGE);
+            }
         }
-
+        
         if(evt.getSource() == adicionarCliente){
-            ClienteInterface clienteInterface = new ClienteInterface();
-            clienteInterface.setVisible(true);
+            ClienteVisao clienteVisao = new ClienteVisao();
+            clienteVisao.setVisible(true);
         }
 
+        if(evt.getSource() == listarClientes){
+            ClientesDadosTable.listarClientes();
+        }
+
+        if(evt.getSource() == listarProduto){
+            ProdutosDadosTable.listarProdutos();
+        }
     }
-    
 
     private JPanel criarBloco(String titulo, String caminhoImagem) {
         // Painel para cada bloco

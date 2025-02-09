@@ -1,6 +1,5 @@
 package src.pages.documento;
 
-import src.models.DocumentoModelo;
 import src.DAO.AdicionarDocumentosDAO;
 
 import javax.swing.*;

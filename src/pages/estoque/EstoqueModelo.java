@@ -1,8 +1,9 @@
-package src.models;
+package src.pages.estoque;
 
 import java.io.Serializable;
 
 import src.components.utils.StringBufferModelo;
+import src.pages.produto.ProdutoModelo;
 public class EstoqueModelo implements Serializable{
 
     private int id, quantidade;
@@ -48,4 +49,6 @@ public class EstoqueModelo implements Serializable{
     public void setDataAtualizacao(String NewDataAtualizacao){
         dataAtualizacao = new StringBufferModelo(NewDataAtualizacao, 50);
     }
+
+    
 }

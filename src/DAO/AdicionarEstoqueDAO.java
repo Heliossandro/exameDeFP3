@@ -6,7 +6,8 @@ import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.util.*;
-import src.models.EstoqueModelo;
+
+import src.pages.estoque.EstoqueModelo;
 
 public class AdicionarEstoqueDAO {
     private static final String FILE_NAME = "estoque.dat";

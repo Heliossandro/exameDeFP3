@@ -1,13 +1,13 @@
 package src.DAO;
 
-import src.models.DocumentoModelo;
-
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.util.*;
+
+import src.pages.documento.DocumentoModelo;
 
 public class AdicionarDocumentosDAO {
     private static final String FILE_NAME = "documentos.dat";

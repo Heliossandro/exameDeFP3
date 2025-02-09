@@ -1,25 +1,22 @@
 package src.pages.CategoriaProduto;
 
-import src.models.*;
 import src.DAO.AdicionarCategoriaDAO;
 
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.*;
 import java.util.List;
-import java.io.*;
 
 public class CategoriaProdutosInterface extends JFrame {
-
     private PainelSul sul;
     private PainelCentro centro;
     private static int contadorId;
     private AdicionarCategoriaDAO dao = new AdicionarCategoriaDAO();
 
     public CategoriaProdutosInterface() {
-        super("Categoria Dos Produtos");
+        super("Adicionar Documento");
 
-        // Inicializar contadorId com o valor salvo
+        // Recuperar o próximo ID com base nos documentos existentes
         contadorId = recuperarUltimoId();
 
         getContentPane().add(centro = new PainelCentro(), BorderLayout.CENTER);
@@ -31,44 +28,30 @@ public class CategoriaProdutosInterface extends JFrame {
     }
 
     private int recuperarUltimoId() {
-      List<CategoriaProdutoModelo> categoriaProdutos = dao.getAll();
-      int maxId = 0;
-      for (CategoriaProdutoModelo cat : categoriaProdutos){
-        if (cat.getId() > maxId) {
-            maxId = cat.getId();
-        }
-      }
-      return maxId + 1;
-    }
-
-    private void salvarUltimoId() {
-        try {
-            File pasta = new File("dat");
-            if (!pasta.exists()) {
-                pasta.mkdir(); // Cria a pasta se não existir
+        List<CategoriaProdutoModelo> categorias = dao.getAll();
+        int maxId = 0;
+        for (CategoriaProdutoModelo doc : categorias) {
+            if (doc.getId() > maxId) {
+                maxId = doc.getId();
             }
-            ObjectOutputStream oos = new ObjectOutputStream(new FileOutputStream("dat/Categoria.dat"));
-            oos.writeInt(contadorId);
-            oos.close();
-        } catch (IOException e) {
-            e.printStackTrace();
         }
+        return maxId + 1; // O próximo ID será o maior encontrado + 1
     }
 
     class PainelCentro extends JPanel {
         private JTextField txtId;
-        private JTextField txtCategoria;
+        private JTextField txtTipoDoCategoria;
 
         public PainelCentro() {
             setLayout(new GridBagLayout());
-            setBorder(BorderFactory.createEmptyBorder(20, 20, 20, 20)); // Margem interna
-            setBackground(new Color(245, 245, 245)); // Cor de fundo
+            setBorder(BorderFactory.createEmptyBorder(20, 20, 20, 20));
+            setBackground(new Color(245, 245, 245));
 
             GridBagConstraints gbc = new GridBagConstraints();
-            gbc.insets = new Insets(10, 10, 10, 10); // Espaçamento entre componentes
+            gbc.insets = new Insets(10, 10, 10, 10);
             gbc.fill = GridBagConstraints.HORIZONTAL;
 
-            // Campo de ID (gerado automaticamente)
+            // Campo ID
             JLabel lblId = new JLabel("ID:");
             lblId.setFont(new Font("Arial", Font.BOLD, 14));
             gbc.gridx = 0;
@@ -76,32 +59,32 @@ public class CategoriaProdutosInterface extends JFrame {
             add(lblId, gbc);
 
             txtId = new JTextField(String.valueOf(contadorId));
-            txtId.setEditable(false); // Torna o campo de ID somente leitura
+            txtId.setEditable(false);
             txtId.setFont(new Font("Arial", Font.BOLD, 14));
             txtId.setHorizontalAlignment(JTextField.CENTER);
-            txtId.setPreferredSize(new Dimension(200, 30)); // Define largura e altura
+            txtId.setPreferredSize(new Dimension(200, 30));
             gbc.gridx = 1;
             gbc.gridy = 0;
             add(txtId, gbc);
 
-            // Campo para Categoria
+            // Campo Categoria
             JLabel lblCategoria = new JLabel("Categoria:");
             lblCategoria.setFont(new Font("Arial", Font.BOLD, 14));
             gbc.gridx = 0;
             gbc.gridy = 1;
             add(lblCategoria, gbc);
 
-            txtCategoria = new JTextField();
-            txtCategoria.setFont(new Font("Arial", Font.PLAIN, 14));
-            txtCategoria.setBorder(BorderFactory.createLineBorder(new Color(200, 200, 200), 1));
-            txtCategoria.setPreferredSize(new Dimension(200, 30)); // Define largura e altura
+            txtTipoDoCategoria = new JTextField();
+            txtTipoDoCategoria.setFont(new Font("Arial", Font.PLAIN, 14));
+            txtTipoDoCategoria.setBorder(BorderFactory.createLineBorder(new Color(200, 200, 200), 1));
+            txtTipoDoCategoria.setPreferredSize(new Dimension(200, 30));
             gbc.gridx = 1;
             gbc.gridy = 1;
-            add(txtCategoria, gbc);
+            add(txtTipoDoCategoria, gbc);
         }
 
         public String getCategoria() {
-            return txtCategoria.getText();
+            return txtTipoDoCategoria.getText();
         }
 
         public int getId() {
@@ -113,15 +96,13 @@ public class CategoriaProdutosInterface extends JFrame {
         private JButton btnSalvar, btnCancelar;
 
         public PainelSul() {
-            setLayout(new FlowLayout(FlowLayout.CENTER, 10, 10)); // Alinhamento e espaçamento
-            setBackground(new Color(245, 245, 245)); // Cor de fundo
+            setLayout(new FlowLayout(FlowLayout.CENTER, 10, 10));
+            setBackground(new Color(245, 245, 245));
 
-            // Botão Salvar
             btnSalvar = new JButton("Salvar");
             estilizarBotao(btnSalvar);
             add(btnSalvar);
 
-            // Botão Cancelar
             btnCancelar = new JButton("Cancelar");
             estilizarBotao(btnCancelar);
             add(btnCancelar);
@@ -132,19 +113,18 @@ public class CategoriaProdutosInterface extends JFrame {
 
         private void estilizarBotao(JButton botao) {
             botao.setFocusPainted(false);
-            botao.setBackground(new Color(0, 120, 215)); // Azul
+            botao.setBackground(new Color(0, 120, 215));
             botao.setForeground(Color.WHITE);
             botao.setFont(new Font("Arial", Font.BOLD, 14));
             botao.setBorder(BorderFactory.createEmptyBorder(10, 20, 10, 20));
             botao.setCursor(new Cursor(Cursor.HAND_CURSOR));
 
-            // Efeito hover
-            botao.addMouseListener(new java.awt.event.MouseAdapter() {
-                public void mouseEntered(java.awt.event.MouseEvent evt) {
+            botao.addMouseListener(new MouseAdapter() {
+                public void mouseEntered(MouseEvent evt) {
                     botao.setBackground(new Color(0, 100, 180));
                 }
 
-                public void mouseExited(java.awt.event.MouseEvent evt) {
+                public void mouseExited(MouseEvent evt) {
                     botao.setBackground(new Color(0, 120, 215));
                 }
             });
@@ -155,10 +135,22 @@ public class CategoriaProdutosInterface extends JFrame {
                 String categoria = centro.getCategoria();
                 int id = centro.getId();
 
-                JOptionPane.showMessageDialog(null, "ID: " + id + "\nCategoria: " + categoria, "Dados Salvos", JOptionPane.INFORMATION_MESSAGE);
+                if (categoria.trim().isEmpty()) {
+                    JOptionPane.showMessageDialog(null, "O campo Documento não pode estar vazio!", "Erro", JOptionPane.ERROR_MESSAGE);
+                    return;
+                }
 
-                contadorId++;
-                salvarUltimoId(); // Salvar o ID após incremento
+                CategoriaProdutoModelo CategoriaProdutoModelo = new CategoriaProdutoModelo(id, categoria);
+                dao.save(CategoriaProdutoModelo);
+
+                JOptionPane.showMessageDialog(null, "Documento salvo com sucesso!",
+                        "Sucesso", JOptionPane.INFORMATION_MESSAGE);
+
+                // Atualizar o ID e limpar o campo de texto
+                contadorId = recuperarUltimoId();
+                centro.txtId.setText(String.valueOf(contadorId));
+                centro.txtTipoDoCategoria.setText("");
+
             } else {
                 dispose();
             }
@@ -169,3 +161,4 @@ public class CategoriaProdutosInterface extends JFrame {
         new CategoriaProdutosInterface();
     }
 }
+

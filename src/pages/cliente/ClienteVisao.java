@@ -1,3 +1,5 @@
+package src.pages.cliente;
+
 /*----------------------------------------
 Nome: Osvaldo Ramos, 2817
 Tema: 
@@ -10,7 +12,6 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.*;
 import SwingComponents.*;
-import src.models.ClienteModelo;
 import Calendario.*;
 
 public class ClienteVisao extends JFrame
@@ -36,7 +37,6 @@ public class ClienteVisao extends JFrame
 		private JTextField idJTF, nomeJTF, numTelefoneJTF, emailJTF;
 		private JComboBox generoJCB;
 		private String generos[] = {"Masculino", "Feminino"};
-		
 		public PainelCentro()
 		{
 			
@@ -45,8 +45,9 @@ public class ClienteVisao extends JFrame
 			//linha 1
 			add( new JLabel("ID") );
 			add( idJTF = new JTextField() );
-			idJTF.setText("" + ClientesDadosTable.getNextID());
-			//idJTF.setFocusable(false);
+			ClienteFile file = new ClienteFile();
+			idJTF.setText("" + file.getProximoCodigo()); //aqui ele vai gerar id automatico atraves daquele Ficheiro antigo de FP2 e vai colocar
+			idJTF.setFocusable(false);
 			
 			//linha 2
 			add( new JLabel("Nome") );
@@ -89,6 +90,20 @@ public class ClienteVisao extends JFrame
 		{
 			return String.valueOf( generoJCB.getSelectedItem() );
 		}
+
+		 public boolean isEmpty(Object valor)
+    {
+        return String.valueOf(valor).equals("") || valor == null || String.valueOf(valor).equals("0") || String.valueOf(valor).equals("0.0");
+    }
+
+
+     public boolean verificarCampos()
+        {
+            if(isEmpty(getId()) || isEmpty(getNome()) || isEmpty(getNumTelefone()) || isEmpty(getEmail()) || isEmpty(getGenero()))
+                    return false;
+                return true; 
+        }
+
 		//metodo salvar = ligacao entre a visao e o modelo
 		public void salvar()
 		{	
@@ -121,7 +136,15 @@ public class ClienteVisao extends JFrame
 		public void actionPerformed(ActionEvent evt)
 		{
 			if (evt.getSource() == salvarJBT)
-				centro.salvar();
+			{
+				if(centro.verificarCampos())
+                    		{
+					centro.salvar();
+				}
+				else
+					JOptionPane.showMessageDialog(null, "Campo vazios", "Verificador de campos", JOptionPane.ERROR_MESSAGE);
+
+			}
 			else
 				dispose();
 		}

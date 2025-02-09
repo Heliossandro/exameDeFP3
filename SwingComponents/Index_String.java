@@ -5,8 +5,8 @@ package SwingComponents;
  * @  Copyright:    Copyright (c) 2003
  * @  Author:       Ruben Paxi Quissanga
  * @  Company:      ucan
- * @  Description:  Projecto final (Interaçao Homem Maquina
- * @                / Fundamentos de Programaçao III)
+ * @  Description:  Projecto final (Interaï¿½ao Homem Maquina
+ * @                / Fundamentos de Programaï¿½ao III)
  */
 
 
