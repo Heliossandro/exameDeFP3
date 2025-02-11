@@ -1,7 +1,5 @@
 package src.pages.cliente;
 
-
-
 import javax.swing.*;
 import SwingComponents.*;
 import Calendario.*;

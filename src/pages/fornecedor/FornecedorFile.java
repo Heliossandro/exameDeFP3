@@ -1,22 +1,18 @@
-package src.pages.venda;
-
-
+package src.pages.fornecedor;
 
 import javax.swing.*;
 import SwingComponents.*;
-import Calendario.*;
 import java.io.*;
-import java.util.*;
 
-public class VendaFile extends ObjectsFile
+public class FornecedorFile extends ObjectsFile
 {
 	
-	public VendaFile()
+	public FornecedorFile()
 	{
-		super("VENDA.DAT", new VendaModelo());
+		super("FORNECEDOR.DAT", new FornecedorModelo() );
 	}
 	
-	public void salvarDados(VendaModelo modelo)
+	public void salvarDados(FornecedorModelo modelo)
 	{
 		try
 		{
@@ -33,7 +29,7 @@ public class VendaFile extends ObjectsFile
 		catch (IOException ex)
 		{
 			ex.printStackTrace();
-			JOptionPane.showMessageDialog(null, "Falha ao Salvar um Novo Cliente");
+			JOptionPane.showMessageDialog(null, "Falha ao Salvar um Novo Fornecedor");
 		}
 	}
 

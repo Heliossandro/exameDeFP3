@@ -9,67 +9,51 @@ import java.util.*;
 
 import src.pages.CategoriaProduto.CategoriaProdutoModelo;
 
-
 public class AdicionarCategoriaDAO {
-    private static final String FILE_NAME = "categorias.dat";
+    private static final String FILE_NAME = "categoriaProduto.dat";
 
-    public void save(CategoriaProdutoModelo categoria) {
-        if (categoria == null ||categoria.getId() <= 0) {
-            System.err.println("categoria inválido!");
-            return;
-        }
-        List<CategoriaProdutoModelo> categorias = getAll();
+    public void save(CategoriaProdutoModelo produto){
+        List<CategoriaProdutoModelo> produtos = getAll();
         boolean found = false;
-        for (int i = 0; i < categorias.size(); i++) {
-            if (categorias.get(i).getId() ==categoria.getId()) {
-                categorias.set(i,categoria);
+        for(int i = 0 ; i < produtos.size() ; i++){
+            if(produtos.get(i).getId() == produto.getId()){
+                produtos.set(i, produto);
                 found = true;
                 break;
             }
         }
-        if (!found) {
-            categorias.add(categoria);
+        if(!found){
+            produtos.add(produto);
         }
-        saveToFile(categorias);
-    }
-    
+        saveToFile(produtos);
+    } 
     
     public CategoriaProdutoModelo get(int id) {
-        List<CategoriaProdutoModelo> categorias = getAll();
-        for (CategoriaProdutoModelo categoria : categorias) {
-            if (categoria.getId() == id) {
-                return categoria;
+        List<CategoriaProdutoModelo> produtos = getAll();
+        for (CategoriaProdutoModelo produto : produtos) {
+            if (produto.getId() == id) {
+                return produto;
             }
         }
         return null;
     }
 
-    private void saveToFile(List<CategoriaProdutoModelo> categorias) {
-        if (categorias == null) return;
-        System.out.println("Salvando categorias: " + categorias.size()); // Verifique o tamanho da lista
+    private void saveToFile(List<CategoriaProdutoModelo> produtos) {
         try (ObjectOutputStream oos = new ObjectOutputStream(new FileOutputStream(FILE_NAME))) {
-            oos.writeObject(categorias);
-            System.out.println("Categorias salvas com sucesso!");
+            oos.writeObject(produtos);
         } catch (IOException e) {
             e.printStackTrace();
         }
-    }    
-    
+    }
+
     @SuppressWarnings("unchecked")
     public List<CategoriaProdutoModelo> getAll() {
-        List<CategoriaProdutoModelo> categorias = new ArrayList<>();
+        List<CategoriaProdutoModelo> produtos = new ArrayList<>();
         try (ObjectInputStream ois = new ObjectInputStream(new FileInputStream(FILE_NAME))) {
-            categorias = (List<CategoriaProdutoModelo>) ois.readObject();
-            System.out.println("Categorias carregadas: " + categorias.size());
-        } catch (IOException e) {
-            if (!(e instanceof java.io.EOFException)) {
-                e.printStackTrace();
-            }
-        } catch (ClassNotFoundException e) {
-            e.printStackTrace();
+            produtos = (List<CategoriaProdutoModelo>) ois.readObject();
+        } catch (IOException | ClassNotFoundException e) {
+            // Arquivo não encontrado ou vazio
         }
-        return categorias;
-    }
-    
-
+        return produtos;
+    } 
 }

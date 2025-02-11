@@ -30,6 +30,7 @@ Data: 13.01.2025
    - String dataDeValidade
    - String observacao
    - CategoriaProdutos categoriaProduto
+   - fornecedorModelo fornecedor
 
    ClientesModelo
    - int id
@@ -59,14 +60,11 @@ Data: 13.01.2025
    - String dataVenda
    - String metodoDePagamento
 
-
    FornecedoresModelo
    - int id
    - String nome
    - String contato
    - String endereco
-   - String email
-   - String categoriaProduto
 
 4. Ficheiro
 

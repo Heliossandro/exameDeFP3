@@ -1,25 +1,25 @@
-package src.pages.cliente;
+package src.pages.fornecedor;
 
 import java.io.IOException;
 import java.io.RandomAccessFile;
 
 import src.components.utils.SaveWriteReadInteface;
 
-public class ClientesPNode extends ClientesDadosTable implements SaveWriteReadInteface
+public class FornecedoresPNode extends FornecedoresDadosTable implements SaveWriteReadInteface
 {
-  private ClientesPNode next, prev;
-  private ClienteModelo model;
+  private FornecedoresPNode next, prev;
+  private FornecedorModelo model;
   //protected int numeroAluno;
   
-public ClientesPNode(ClienteModelo model)
+public FornecedoresPNode(FornecedorModelo model)
   {
-  super("clientes.DAT", 100);
+  super("fornecedoes.DAT", 100);
   this.model = model;
   next = prev = null;
   } 
-  public ClientesPNode()
+  public FornecedoresPNode()
   { 
-  model = new ClienteModelo();	
+  model = new FornecedorModelo();	
   }
   
   public String getKey()
@@ -46,37 +46,37 @@ public ClientesPNode(ClienteModelo model)
   model.read(stream);
   }	
 
-  public ClienteModelo getModel()
+  public FornecedorModelo getModel()
   {
   return model;
   }
-  public void setPrev(ClientesPNode prev)
+  public void setPrev(FornecedoresPNode prev)
   {
   this.prev = prev;
   }
 
-  public void setNext(ClientesPNode next)
+  public void setNext(FornecedoresPNode next)
   {
   this.next = next;
   }
 
-  public ClientesPNode getNext()
+  public FornecedoresPNode getNext()
   {
   return next;
   }
-  public ClientesPNode getPrev()
+  public FornecedoresPNode getPrev()
   {
   return prev;
   }
 
   public void save()
   {
-  adicionarNovoCliente(this);
+  adicionarNovoFornecedor(this);
   }
  
   public static long sizeof()
   {		
-  ClientesPNode node = new ClientesPNode();
+  FornecedoresPNode node = new FornecedoresPNode();
   try
       { 
           return  node.model.sizeof();

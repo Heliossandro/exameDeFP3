@@ -1,10 +1,8 @@
-package src.pages.produto;
+package src.pages.fornecedor;
 
 import javax.swing.JTextArea;
 import javax.swing.JScrollPane;
-import javax.swing.JTable;
 import javax.swing.*;
-import javax.swing.table.DefaultTableModel;
 
 import src.components.utils.AbstractHashTableCoalashed;
 import src.components.utils.SaveWriteReadInteface;
@@ -13,13 +11,13 @@ import src.components.utils.ShowMessage;
 import java.util.*;
 
 
-public class ProdutosDadosTable extends AbstractHashTableCoalashed
+public class FornecedoresDadosTable extends AbstractHashTableCoalashed
 {
-   public ProdutosDadosTable(String fileName, int tableSize)
+   public FornecedoresDadosTable(String fileName, int tableSize)
    {
 		super(fileName, tableSize);	
    }	
-   public ProdutosDadosTable( )
+   public FornecedoresDadosTable( )
    {
 
    }
@@ -39,7 +37,7 @@ public class ProdutosDadosTable extends AbstractHashTableCoalashed
    //devolve o no q esta na posicao <tablePosition> da tabela
    public SaveWriteReadInteface getNode(int tablePosition)
    {
-	ProdutosPNode node = (ProdutosPNode)getEmptyNode();
+	FornecedoresPNode node = (FornecedoresPNode)getEmptyNode();
 
 	long pos = getFilePosition( tablePosition );
 
@@ -66,12 +64,12 @@ public class ProdutosDadosTable extends AbstractHashTableCoalashed
  
  //devolve o  no cuja chave e <key>
 //podemos usar este metodo para pesquisar por nome (key)
-public ProdutosPNode getNode(String key) throws NullPointerException
+public FornecedoresPNode getNode(String key) throws NullPointerException
 {		
 	//calcula a posicao de entrada na tabela apartir da chave key
 	int tablePosition = calcularHashCode( key );
 
-	ProdutosPNode tmp = (ProdutosPNode)getNode( tablePosition );
+	FornecedoresPNode tmp = (FornecedoresPNode)getNode( tablePosition );
 
 		if (tmp != null)
 		{
@@ -90,9 +88,9 @@ public ProdutosPNode getNode(String key) throws NullPointerException
 
 public static boolean exists(String key)
 {
-	ProdutosDadosTable table = new ProdutosDadosTable("produtos.dat", 100);
+	FornecedoresDadosTable table = new FornecedoresDadosTable("fornecedores.DAT", 100);
 	
-	ProdutosPNode tmp = table.getNode(key);
+	FornecedoresPNode tmp = table.getNode(key);
 	
 	return !tmp.isEmptyNode();
 }
@@ -103,19 +101,19 @@ public static Vector getAllNodes()
 {
 	Vector listaNodes = new Vector();
 	
-	ProdutosDadosTable hashProduto = new ProdutosDadosTable("produtos.dat", 100);
+	FornecedoresDadosTable hashFornecedor = new FornecedoresDadosTable("fornecedores.DAT", 100);
 	
-	ProdutosPNode tmp = new ProdutosPNode();
+	FornecedoresPNode tmp = new FornecedoresPNode();
 		
-	hashProduto.openFile();
+	hashFornecedor.openFile();
 	
 	try
 	{
-		hashProduto.stream.seek(8);
+		hashFornecedor.stream.seek(8);
 		
-		for(int i=0; i < hashProduto.tableSize; i++)
+		for(int i=0; i < hashFornecedor.tableSize; i++)
 		{
-			tmp.read( hashProduto.stream );
+			tmp.read( hashFornecedor.stream );
 			
 			if( !tmp.isEmptyNode()  )
 			{
@@ -138,7 +136,7 @@ public static Vector getAllNodes()
 
 
 //adiciona na tabela e depois no ficheiro
-public void adicionarNovoProduto(ProdutosPNode node)
+public void adicionarNovoFornecedor(FornecedoresPNode node)
 {
 	try
 	{
@@ -181,9 +179,9 @@ public void adicionarNovoProduto(ProdutosPNode node)
 
 
 // sobrepoem 1 registo
-public void sobrePorRegisto(ProdutosPNode node, int posTabela)
+public void sobrePorRegisto(FornecedoresPNode node, int posTabela)
 {	
-	ProdutosPNode no = (ProdutosPNode)getNode(posTabela);	
+	FornecedoresPNode no = (FornecedoresPNode)getNode(posTabela);	
 	
 	node.setNext(no.getNext());
 	
@@ -194,9 +192,9 @@ public void sobrePorRegisto(ProdutosPNode node, int posTabela)
 }
 //segredo do projecto
 //adiciona na lista de colisoes
-public void adicionarNaListaColisoes(ProdutosPNode node, int lastColision)
+public void adicionarNaListaColisoes(FornecedoresPNode node, int lastColision)
 {		
-	ProdutosPNode no = (ProdutosPNode)getNode(lastColision);
+	FornecedoresPNode no = (FornecedoresPNode)getNode(lastColision);
 	
 	 //se nao houver ninguem na lista, adicionar
 	if (no.getNext() == null && lastColision != tableSize - 1)
@@ -208,7 +206,7 @@ public void adicionarNaListaColisoes(ProdutosPNode node, int lastColision)
 	}
 	else
 	{
-		ProdutosPNode tmp = no.getNext();
+		FornecedoresPNode tmp = no.getNext();
 	
 		//procura 1 espaco vazio apartir do fim
 		for (int i = tableSize - 1; i >= 0; --i)
@@ -232,44 +230,65 @@ public void adicionarNaListaColisoes(ProdutosPNode node, int lastColision)
 // para escrever o proximo registo
  public long getFilePosition(int tablePosition)
  {
-	return (2 * 4 + tablePosition * ProdutosPNode.sizeof());
+	return (2 * 4 + tablePosition * FornecedoresPNode.sizeof());
  }
 
 
 public SaveWriteReadInteface getEmptyNode()
 {
-	return new ProdutosPNode();
+	return new FornecedoresPNode();
 }
 
-public static int getNextID()
-{
-	//ProdutosDadosTable hashProduto = new ProdutosDadosTable("produtos.dat",100);
-	//return hashProduto.getNextAutoId() + 1;
-	
-	return 1;
+public static int getNextID() {
+    FornecedoresDadosTable hashFornecedor = new FornecedoresDadosTable("fornecedores.DAT", 100);
+    FornecedoresPNode tmp = new FornecedoresPNode();
+    int maxID = 0;
+
+    try {
+        hashFornecedor.openFile();
+        hashFornecedor.stream.seek(8); // Pula os metadados do arquivo
+
+        for (int i = 0; i < hashFornecedor.tableSize; i++) {
+            tmp.read(hashFornecedor.stream);
+            
+            if (!tmp.isEmptyNode()) {
+                int idAtual = tmp.getModel().getId(); // Obtém o ID do fornecedor
+                
+                if (idAtual > maxID) {
+                    maxID = idAtual; // Atualiza o maior ID encontrado
+                }
+            }
+        }
+    } catch (Exception e) {
+        System.out.println("Erro ao buscar o próximo ID: " + e.getMessage());
+    }
+
+    return maxID + 1; // Retorna o próximo ID disponível
 }
+
+
 /*Listar os dados dos alunos numa comboBox*/
-public static void listarProdutos()
+public static void listarFornecedores()
 {
-	ProdutosDadosTable hashProduto = new ProdutosDadosTable("produtos.dat",100);
-	ProdutosPNode tmp = (ProdutosPNode)hashProduto.getEmptyNode();
+	FornecedoresDadosTable hashFornecedor = new FornecedoresDadosTable("fornecedores.DAT",100);
+	FornecedoresPNode tmp = (FornecedoresPNode)hashFornecedor.getEmptyNode();
 	String output = "\n";
 	
 	try
 	{
-			hashProduto.openFile();
+			hashFornecedor.openFile();
 			
-			hashProduto.stream.seek(8);
+			hashFornecedor.stream.seek(8);
 			
-			for(int i = 0; i < hashProduto.tableSize;++i)
+			for(int i = 0; i < hashFornecedor.tableSize;++i)
 			{
-				tmp.read(hashProduto.stream);
+				tmp.read(hashFornecedor.stream);
 				
 				if(!tmp.getKey().equals(""))
 				{						
 					   output += tmp.toString();
 					
-					output += "------------------------------\n";
+					output += "\n------------------------------\n";
 				}						
 			}
 			
@@ -277,7 +296,7 @@ public static void listarProdutos()
 			area.setText(output);
 			area.setEditable(false);
 			
-			JOptionPane.showMessageDialog(null, new JScrollPane(area), "Listagem de Produtos", JOptionPane.INFORMATION_MESSAGE);
+			JOptionPane.showMessageDialog(null, new JScrollPane(area), "Listagem de fornecedores", JOptionPane.INFORMATION_MESSAGE);
 			
 	}
 	catch(Exception e)
@@ -288,6 +307,7 @@ public static void listarProdutos()
 	
 }
 
+
 //888888888888888888888888888888
 public void reHashFile(int nTableSize)
 {
@@ -295,4 +315,4 @@ public void reHashFile(int nTableSize)
 }
 
 
-}
+}  

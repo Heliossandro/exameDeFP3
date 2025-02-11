@@ -248,48 +248,6 @@ public static int getNextID()
 	
 	return 1;
 }
-//
-public static void pesquisarClientesPorGenero(String generoProcurado)
-{
-	ClientesDadosTable hashCliente = new ClientesDadosTable("clientes.DAT",100);
-	ClientesPNode tmp = (ClientesPNode)hashCliente.getEmptyNode();
-	String output = "\n";
-	
-	try
-	{
-			hashCliente.openFile();
-			
-			hashCliente.stream.seek(8);
-			
-			for(int i = 0; i < hashCliente.tableSize;++i)
-			{
-				tmp.read(hashCliente.stream);
-				
-				if(!tmp.getKey().equals(""))
-				{						
-					if (tmp.getModel().getGenero().equals(generoProcurado))
-					{
-						output += tmp.toString();
-						
-						output += "------------------------------\n";
-					}
-				}						
-			}
-			
-			JTextArea area = new JTextArea(40, 50);
-			area.setText(output);
-			area.setEditable(false);
-			
-			JOptionPane.showMessageDialog(null, new JScrollPane(area), "Listagem de clientes", JOptionPane.INFORMATION_MESSAGE);
-			
-	}
-	catch(Exception e)
-	{
-		e.printStackTrace();
-		System.out.println("excpcao no metodo Listar Alunos");
-	}
-	
-}
 
 /*Listar os dados dos alunos numa comboBox*/
 public static void listarClientes()

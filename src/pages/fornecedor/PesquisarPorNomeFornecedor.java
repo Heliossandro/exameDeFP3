@@ -1,4 +1,4 @@
-package src.pages.cliente;
+package src.pages.fornecedor;
 
 import javax.swing.*;
 import java.awt.*;
@@ -6,12 +6,12 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import src.components.utils.ShowMessage;
 
-public class PesquisarPorNomeCliente extends JDialog {
+public class PesquisarPorNomeFornecedor extends JDialog {
     private JTextField campoNome;
     private JButton botaoPesquisar, botaoFechar;
 
-    public PesquisarPorNomeCliente(Frame parent) {
-        super(parent, "Pesquisar Cliente", true);
+    public PesquisarPorNomeFornecedor(Frame parent) {
+        super(parent, "Pesquisar Fornecedor", true);
         configurarUI();
     }
 
@@ -27,42 +27,42 @@ public class PesquisarPorNomeCliente extends JDialog {
         botaoPesquisar.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                pesquisarPorNomeCliente(campoNome.getText().trim());
+                pesquisarPorNomeFornecedor(campoNome.getText().trim());
             }
         });
 
         botaoFechar.addActionListener(e -> dispose());
 
-        add(new JLabel("Digite o nome do cliente:"));
+        add(new JLabel("Digite o nome do Fornecedor:"));
         add(campoNome);
         add(botaoPesquisar);
         add(botaoFechar);
     }
 
-    private void pesquisarPorNomeCliente(String nomeProcurado) {
+    private void pesquisarPorNomeFornecedor(String nomeProcurado) {
         if (nomeProcurado.isEmpty()) {
             ShowMessage.displayMessage("Nome inválido!", "Aviso", false);
             return;
         }
 
-        ClientesDadosTable tabelaClientes = new ClientesDadosTable("clientes.DAT", 100);
+        FornecedoresDadosTable tabelaFornecedors = new FornecedoresDadosTable("Fornecedors.DAT", 100);
 
         try {
-            ClientesPNode cliente = tabelaClientes.getNode(nomeProcurado);
+            FornecedoresPNode fornecedor = tabelaFornecedors.getNode(nomeProcurado);
 
-            if (cliente != null && !cliente.isEmptyNode()) {
-                String mensagem = "Cliente encontrado:\n" + cliente.getModel().toString();
+            if (fornecedor != null && !fornecedor.isEmptyNode()) {
+                String mensagem = "Fornecedor encontrado:\n" + fornecedor.getModel().toString();
                 JOptionPane.showMessageDialog(this, mensagem, "Resultado da Pesquisa", JOptionPane.INFORMATION_MESSAGE);
             } else {
-                ShowMessage.displayMessage("Cliente não encontrado!", "Aviso", false);
+                ShowMessage.displayMessage("Fornecedor não encontrado!", "Aviso", false);
             }
         } catch (Exception e) {
-            ShowMessage.displayMessage("Erro ao pesquisar cliente: " + e.getMessage(), "Erro", true);
+            ShowMessage.displayMessage("Erro ao pesquisar Fornecedor: " + e.getMessage(), "Erro", true);
         }
     }
 
     public static void abrirJanela(Frame parent) {
-        PesquisarPorNomeCliente dialog = new PesquisarPorNomeCliente(parent);
+        PesquisarPorNomeFornecedor dialog = new PesquisarPorNomeFornecedor(parent);
         dialog.setVisible(true);
     }
 }

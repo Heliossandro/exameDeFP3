@@ -2,9 +2,8 @@ package src.pages.produto;
 
 import java.io.IOException;
 import java.io.RandomAccessFile;
-import java.util.ArrayList;
-import java.util.List;
 
+import SwingComponents.DataModelo;
 import SwingComponents.RegistGeneric;
 import src.components.utils.StringBufferModelo;
 import src.pages.CategoriaProduto.CategoriaProdutoModelo;
@@ -13,7 +12,8 @@ public class ProdutoModelo implements RegistGeneric {
 
     private int id, quantidadeEmEstoque;
     private double preco;
-    private StringBufferModelo nome, marca, dataDeValidade, observacao, fornecedor ;
+    private StringBufferModelo nome, marca, observacao, fornecedor;
+    private DataModelo data;
     private CategoriaProdutoModelo categoria;
 
     public ProdutoModelo() {
@@ -22,22 +22,23 @@ public class ProdutoModelo implements RegistGeneric {
         this.preco = 0.0;
         nome = new StringBufferModelo("", 50);
         marca = new StringBufferModelo("", 50);
-        dataDeValidade = new StringBufferModelo("", 20);
         observacao = new StringBufferModelo("", 100);
         fornecedor = new StringBufferModelo("", 50);
+        data = new DataModelo("11-11-1975");
         categoria = new CategoriaProdutoModelo();
     }
 
-    public ProdutoModelo(int id, String nome, String marca, int quantidadeEmEstoque, double preco,
-                         String dataDeValidade, String fornecedor, CategoriaProdutoModelo categoria, String observacao) {
+    public ProdutoModelo(int id, int quantidadeEmEstoque, double preco, String nome, String marca,  
+                        String observacao,
+                        String fornecedor, String data, CategoriaProdutoModelo categoria) {
         this.id = id;
         this.quantidadeEmEstoque = quantidadeEmEstoque;
         this.preco = preco;
         this.nome = new StringBufferModelo(nome, 50);
         this.marca = new StringBufferModelo(marca, 50);
-        this.dataDeValidade = new StringBufferModelo(dataDeValidade, 20);
         this.observacao = new StringBufferModelo(observacao, 100);
         this.fornecedor = new StringBufferModelo(fornecedor, 50);
+        this.data = new DataModelo(data);
         this.categoria = categoria;
     }
 
@@ -61,10 +62,6 @@ public class ProdutoModelo implements RegistGeneric {
         return preco;
     }
 
-    public String getDataDeValidade() {
-        return dataDeValidade.toStringEliminatingSpaces();
-    }
-
     public String getFornecedor() {
         return fornecedor.toStringEliminatingSpaces();
     }
@@ -73,6 +70,9 @@ public class ProdutoModelo implements RegistGeneric {
         return categoria;
     }
 
+    public String getData() {
+        return data.toString();
+    }
 
     public String getObservacao() {
         return observacao.toStringEliminatingSpaces();
@@ -98,16 +98,16 @@ public class ProdutoModelo implements RegistGeneric {
         this.preco = newPreco;
     }
 
-    public void setDataDeValidade(String newDataDeValidade) {
-        this.dataDeValidade = new StringBufferModelo(newDataDeValidade, 20);
-    }
-
     public void setFornecedor(String newFornecedor) {
         this.fornecedor = new StringBufferModelo(newFornecedor, 50);
     }
 
     public void setCategoria(CategoriaProdutoModelo newCategoria) {
         this.categoria = newCategoria;
+    }
+
+    public void setData(String newData) {
+        this.data = new DataModelo(newData);
     }
 
     public void setObservacao(String newObservacao) {
@@ -122,18 +122,24 @@ public class ProdutoModelo implements RegistGeneric {
                "Marca: " + getMarca() + "\n" +
                "Quantidade em estoque: " + getQuantidadeEmEstoque() + "\n" +
                "Preço: " + getPreco() + "\n" +
-               "Data de validade: " + getDataDeValidade() + "\n" +
+               "Data de validade: " + getData() + "\n" +
                "Fornecedor: " + getFornecedor() + "\n" +
                "Categoria: " + getCategoria().getNome() + "\n" +
                "Observação: " + getObservacao() + "\n";
     }
 
-    public long sizeof() {
-        return (50 + 50 + 50 + 50) * 2 +  // dataVenda (50) + metodoDePagamento (50) -> cada caractere 2 bytes
-               4 +  // id (int)
-               4 +  // quantidade (int)
-               4; // total (float)
+    public long sizeof() throws IOException {
+        return Integer.BYTES + // id
+               Integer.BYTES + // quantidadeEmEstoque
+               Double.BYTES + // preco
+               nome.sizeof() + 
+               marca.sizeof() + 
+               observacao.sizeof() + 
+               fornecedor.sizeof() + 
+               data.sizeof() + // <- Aqui pode estar lançando IOException
+               Integer.BYTES; // categoria ID
     }
+
     public void write(RandomAccessFile stream) {
         try {
             stream.writeInt(id);
@@ -141,7 +147,7 @@ public class ProdutoModelo implements RegistGeneric {
             marca.write(stream);
             stream.writeInt(quantidadeEmEstoque);
             stream.writeDouble(preco);
-            dataDeValidade.write(stream);
+            data.write(stream);
             fornecedor.write(stream);
             stream.writeInt(categoria.getId());
             observacao.write(stream);
@@ -157,7 +163,7 @@ public class ProdutoModelo implements RegistGeneric {
             marca.read(stream);
             quantidadeEmEstoque = stream.readInt();
             preco = stream.readDouble();
-            dataDeValidade.read(stream);
+            data.read(stream);
             fornecedor.read(stream);
             int categoriaId = stream.readInt();
         
@@ -175,4 +181,4 @@ public class ProdutoModelo implements RegistGeneric {
         ProdutosPNode node = new ProdutosPNode(this);
         node.save();
     }
-}  
+}

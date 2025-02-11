@@ -4,26 +4,35 @@ import java.io.IOException;
 import java.io.RandomAccessFile;
 import java.io.Serializable;
 import src.components.utils.StringBufferModelo;
-import src.pages.cliente.ClienteModelo;
-import src.pages.produto.ProdutoModelo;
 
 public class VendaModelo implements Serializable {
     private static final long serialVersionUID = 7915799766965423151L;
 
     private int id, quantidade;
-    private ProdutoModelo produto;
-    private ClienteModelo cliente;
-    private StringBufferModelo dataVenda, metodoDePagamento;
-    private float total;
+    private double total;  // Total não estava declarado
+    private StringBufferModelo dataVenda, metodoDePagamento, produto, cliente;
+    private double preco;
 
-    public VendaModelo(int id, int quantidade, String dataVenda, ProdutoModelo produto, ClienteModelo cliente, String metodoDePagamento, float total) {
+    public VendaModelo() {
+        this.id = 0;
+        this.quantidade = 0;
+        this.produto = new StringBufferModelo(50);
+        this.cliente = new StringBufferModelo(50);
+        this.dataVenda = new StringBufferModelo(50);
+        this.metodoDePagamento = new StringBufferModelo(50);
+        this.preco = 0;
+        this.total = 0;
+    }
+
+    public VendaModelo(int id, int quantidade, String dataVenda, String produto, String cliente, String metodoDePagamento, double preco) {
         this.id = id;
         this.quantidade = quantidade;
-        this.produto = produto;
-        this.cliente = cliente;
+        this.produto = new StringBufferModelo(produto, 50);
+        this.cliente = new StringBufferModelo(cliente, 50);
         this.dataVenda = new StringBufferModelo(dataVenda, 50);
         this.metodoDePagamento = new StringBufferModelo(metodoDePagamento, 50);
-        this.total = total;
+        this.preco = preco;
+        this.total = quantidade * preco; // Calculando total
     }
 
     public int getId() {
@@ -34,12 +43,12 @@ public class VendaModelo implements Serializable {
         return quantidade;
     }
 
-    public ProdutoModelo getProduto() {
-        return produto;
+    public String getProduto() {
+        return produto.toStringEliminatingSpaces();
     }
 
-    public ClienteModelo getCliente() {
-        return cliente;
+    public String getCliente() {
+        return cliente.toStringEliminatingSpaces();
     }
 
     public String getDataVenda() {
@@ -50,25 +59,30 @@ public class VendaModelo implements Serializable {
         return metodoDePagamento.toStringEliminatingSpaces();
     }
 
-    public float getTotal() {
+    public double getPreco(){
+        return preco;
+    }
+
+    public double getTotal() {
         return total;
     }
 
-    // métodos set
+    // Métodos set
     public void setId(int newId) {
         id = newId;
     }
 
-    public void setQuantidade(int NewQuantidade) {
-        this.quantidade = NewQuantidade;
+    public void setQuantidade(int newQuantidade) {
+        this.quantidade = newQuantidade;
+        this.total = this.quantidade * this.preco; // Atualizar total
     }
 
-    public void setProduto(ProdutoModelo produto) {
-        this.produto = produto;
+    public void setProduto(String produto) {
+        this.produto = new StringBufferModelo(produto, 50);
     }
 
-    public void setCliente(ClienteModelo cliente) {
-        this.cliente = cliente;
+    public void setCliente(String cliente) {
+        this.cliente = new StringBufferModelo(cliente, 50);
     }
 
     public void setDataVenda(String newDataVenda) {
@@ -79,25 +93,31 @@ public class VendaModelo implements Serializable {
         metodoDePagamento = new StringBufferModelo(newMetodoPagamento, 50);
     }
 
-    public void setTotal(float total) {
+    public void setPreco(double preco) {
+        this.preco = preco;
+    } 
+
+    public void setTotal(double total) {
         this.total = total;
     }
+
     public long sizeof() {
-        return (50 + 50 + 50 + 50) * 2 +  // dataVenda (50) + metodoDePagamento (50) -> cada caractere 2 bytes
+        return (50 + 50 + 50 + 50) * 2 +  // dataVenda, metodoDePagamento, produto, cliente (cada caractere ocupa 2 bytes)
                4 +  // id (int)
                4 +  // quantidade (int)
-               4; // total (float)
+               8 + 8; // total (double)
     }
-    
+
     @Override
     public String toString() {
         return "Dados da Venda:\n" +
                 "ID: " + id + "\n" +
                 "Quantidade: " + quantidade + "\n" +
-                "Produto: " + produto.getNome() + "\n" +
-                "Cliente: " + cliente.getNome() + "\n" +
+                "Produto: " + getProduto() + "\n" +
+                "Cliente: " + getCliente() + "\n" +
                 "Data da Venda: " + getDataVenda() + "\n" +
                 "Método de Pagamento: " + getMetodoDePagamento() + "\n" +
+                "Peco: " + getPreco() +
                 "Total: " + total + "\n";
     }
 
@@ -109,7 +129,8 @@ public class VendaModelo implements Serializable {
             cliente.write(stream);
             dataVenda.write(stream);
             metodoDePagamento.write(stream);
-            stream.writeFloat(total);
+            stream.writeDouble(preco);
+            stream.writeDouble(total);
         } catch (IOException ex) {
             ex.printStackTrace();
         }
@@ -119,13 +140,12 @@ public class VendaModelo implements Serializable {
         try {
             id = stream.readInt();
             quantidade = stream.readInt();
-            produto = new ProdutoModelo();
             produto.read(stream);
-            cliente = new ClienteModelo();
             cliente.read(stream);
             dataVenda.read(stream);
             metodoDePagamento.read(stream);
-            total = stream.readFloat();
+            preco = stream.readDouble();
+            total = stream.readDouble();
         } catch (IOException ex) {
             ex.printStackTrace();
         }

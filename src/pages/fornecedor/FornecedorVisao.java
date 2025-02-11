@@ -1,27 +1,27 @@
-package src.pages.cliente;
+package src.pages.fornecedor;
 
 /*----------------------------------------
 Nome: Osvaldo Ramos, 2817
 Tema: 
-File: ClienteVisao.java
+File: FornecedorVisao.java
 
 ------------------------------------------*/
 
 
 import javax.swing.*;
+
 import java.awt.*;
 import java.awt.event.*;
 
-public class ClienteVisao extends JFrame
+public class FornecedorVisao extends JFrame
 {	
 	private PainelSul sul;
 	private PainelCentro centro;
 	
-	public ClienteVisao()
+	public FornecedorVisao()
 	{
-		super("Registar Novo Cliente");
+		super("Registar Novo Fornecedor");
 	
-		
 		getContentPane().add( centro = new PainelCentro(), BorderLayout.CENTER);
 		getContentPane().add( sul = new PainelSul(), BorderLayout.SOUTH);
 		
@@ -32,7 +32,7 @@ public class ClienteVisao extends JFrame
 	
 	class PainelCentro extends JPanel
 	{
-		private JTextField idJTF, nomeJTF, numTelefoneJTF, emailJTF;
+		private JTextField idJTF, nomeJTF, numTelefoneJTF, enderecoJTF;
 		
 		public PainelCentro()
 		{
@@ -41,8 +41,8 @@ public class ClienteVisao extends JFrame
 			//linha 1
 			add( new JLabel("ID") );
 			add( idJTF = new JTextField() );
-			idJTF.setText("" + ClientesDadosTable.getNextID());
-			//idJTF.setFocusable(false);
+			idJTF.setText("" + FornecedoresDadosTable.getNextID());
+			idJTF.setEditable(false);
 			
 			//linha 2
 			add( new JLabel("Nome") );
@@ -53,8 +53,8 @@ public class ClienteVisao extends JFrame
 			add( numTelefoneJTF = new JTextField() );
 
 						//linha 3
-			add( new JLabel("email") );
-			add( emailJTF = new JTextField() );
+			add( new JLabel("endereco") );
+			add( enderecoJTF = new JTextField() );
 		}
 		
 		// ---- metodos get da visao
@@ -72,16 +72,16 @@ public class ClienteVisao extends JFrame
 			return numTelefoneJTF.getText().trim();
 		}
 
-		public  String getEmail(){
-			return emailJTF.getText().trim();
+		public  String getEndereco(){
+			return enderecoJTF.getText().trim();
 		}
 
 		//metodo salvar = ligacao entre a visao e o modelo
 		public void salvar()
 		{	
 			//enviamos os dados da visao para o modelo
-			ClienteModelo modelo = new ClienteModelo(getId(), getNome(),
-			getNumTelefone(), getEmail());
+			FornecedorModelo modelo = new FornecedorModelo(getId(), getNome(),
+			getNumTelefone(), getEndereco());
 				
 			JOptionPane.showMessageDialog(null, modelo.toString());
 			
@@ -116,6 +116,6 @@ public class ClienteVisao extends JFrame
 	
 	public static void main(String args[])
 	{
-		new ClienteVisao();
+		new FornecedorVisao();
 	}
-}
+} 

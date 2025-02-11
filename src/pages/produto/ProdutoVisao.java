@@ -1,7 +1,9 @@
 package src.pages.produto;
 
 import javax.swing.*;
+import Calendario.*;
 import src.pages.CategoriaProduto.CategoriaProdutoModelo;
+import src.pages.fornecedor.FornecedoresDadosTable;
 import java.awt.*;
 import java.awt.event.*;
 import java.util.List;
@@ -23,9 +25,11 @@ public class ProdutoVisao extends JFrame {
 
     class PainelCentro extends JPanel {
         private JTextField idJTF, quantidadeJTF, precoJTF;
-        private JTextField nomeJTF, marcaJTF, dataValidadeJTF, observacaoJTF, fornecedorJTF;
+        private JTextField nomeJTF, marcaJTF, observacaoJTF;
         private JComboBox<String> categoriaJCB;
         private List<CategoriaProdutoModelo> categoriasList;
+        private JComboBox<String> fornecedorJCB;
+        private JTextFieldData txtData;
 
         public PainelCentro() {
             setLayout(new GridLayout(9, 2));
@@ -54,28 +58,30 @@ public class ProdutoVisao extends JFrame {
             add(precoJTF = new JTextField());
 
             // Linha 6
-            add(new JLabel("Data de Validade"));
-            add(dataValidadeJTF = new JTextField());
+            add(new JLabel("Data "));
+            JPanel painelData = new JPanel(new GridLayout(1,2));
+            txtData  = new JTextFieldData("Data?");
+			painelData.add( txtData.getDTestField() );
+			painelData.add( txtData.getDButton() );
+			add(painelData);
 
             // Linha 7
             add(new JLabel("Fornecedor"));
-            add(fornecedorJTF = new JTextField());
+            fornecedorJCB = new JComboBox<>(FornecedoresDadosTable.getAllNodes());
+            add(fornecedorJCB);
 
             // Linha 8 - Carregar categorias do arquivo
             add(new JLabel("Categoria"));
 
             // Carregar categorias do arquivo
             categoriasList = CategoriaProdutoModelo.listarCategorias();
-            
+
             // Se a lista estiver vazia, usa um array padrão
-            String[] categoriasArray;
-            if (categoriasList.isEmpty()) {
-                categoriasArray = new String[]{"Nenhuma categoria encontrada"};
-            } else {
-                categoriasArray = categoriasList.stream()
-                                                .map(CategoriaProdutoModelo::getNome)
-                                                .toArray(String[]::new);
-            }
+            String[] categoriasArray = categoriasList.isEmpty()
+                    ? new String[]{"Nenhuma categoria encontrada"}
+                    : categoriasList.stream()
+                                    .map(CategoriaProdutoModelo::getNome)
+                                    .toArray(String[]::new);
 
             // Criar JComboBox com categorias lidas
             categoriaJCB = new JComboBox<>(categoriasArray);
@@ -87,7 +93,7 @@ public class ProdutoVisao extends JFrame {
         }
 
         public int getId() {
-            return Integer.parseInt(idJTF.getText());
+            return Integer.parseInt(idJTF.getText().trim());
         }
 
         public String getNome() {
@@ -99,19 +105,27 @@ public class ProdutoVisao extends JFrame {
         }
 
         public int getQuantidadeEmEstoque() {
-            return Integer.parseInt(quantidadeJTF.getText().trim());
+            try {
+                return Integer.parseInt(quantidadeJTF.getText().trim());
+            } catch (NumberFormatException e) {
+                return 0; // Retorna 0 se o campo estiver vazio ou inválido
+            }
         }
 
         public float getPreco() {
-            return Float.parseFloat(precoJTF.getText().trim());
+            try {
+                return Float.parseFloat(precoJTF.getText().trim());
+            } catch (NumberFormatException e) {
+                return 0.0f;
+            }
         }
 
-        public String getDataDeValidade() {
-            return dataValidadeJTF.getText().trim();
+        public String getData() {
+            return txtData.getDTestField().getText();
         }
 
         public String getFornecedor() {
-            return fornecedorJTF.getText().trim();
+            return (String) fornecedorJCB.getSelectedItem();
         }
 
         public CategoriaProdutoModelo getCategoriaSelecionada() {
@@ -126,20 +140,29 @@ public class ProdutoVisao extends JFrame {
             return observacaoJTF.getText().trim();
         }
 
-        public boolean isEmpty(Object valor) {
-            return valor == null || valor.toString().trim().isEmpty();
+        public boolean isEmpty(String valor) {
+            return valor == null || valor.trim().isEmpty();
         }
 
         public boolean verificarCampos() {
-            return !(isEmpty(getId()) || isEmpty(getNome()) || isEmpty(getMarca()) ||
-                    isEmpty(getQuantidadeEmEstoque()) || isEmpty(getPreco()) ||
-                    isEmpty(getDataDeValidade()) || isEmpty(getFornecedor()) ||
-                    isEmpty(getCategoriaSelecionada()) || isEmpty(getObservacao()));
+            return !(isEmpty(getNome()) || isEmpty(getMarca()) ||
+                    getQuantidadeEmEstoque() == 0 || getPreco() == 0.0f ||
+                    isEmpty(getData()) || isEmpty(getFornecedor()) ||
+                    isEmpty(getObservacao()));
         }
 
         public void salvar() {
-            ProdutoModelo modelo = new ProdutoModelo(getId(), getNome(), getMarca(), getQuantidadeEmEstoque(),
-                    getPreco(), getDataDeValidade(), getFornecedor(), getCategoriaSelecionada(), getObservacao());
+            ProdutoModelo modelo = new ProdutoModelo(
+                getId(), 
+                getQuantidadeEmEstoque(), 
+                getPreco(), 
+                getNome(),
+                getMarca(), 
+                getObservacao(), // Ordem correta
+                getFornecedor(),
+                getData(), // Passar data apenas uma vez
+                getCategoriaSelecionada()
+            );
 
             JOptionPane.showMessageDialog(null, modelo.toString());
             modelo.salvar();
