@@ -1,8 +1,5 @@
 package src.pages.produto;
 
-import javax.swing.JTextArea;
-import javax.swing.JScrollPane;
-import javax.swing.JTable;
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
 
@@ -179,6 +176,20 @@ public void adicionarNovoProduto(ProdutosPNode node)
 		 adicionarNaListaColisoes(node, posTabela);
 }
 
+private static List<ProdutoModelo> listaProdutos = new ArrayList<>();
+
+public static void carregarProdutos() {
+	listaProdutos = ProdutoFile.carregarTodos(); // Agora o método existe!
+}
+
+public static double getPreco(String nomeProduto) {
+	for (ProdutoModelo produto : listaProdutos) {
+		if (produto.getNome().equalsIgnoreCase(nomeProduto)) {
+			return produto.getPreco();
+		}
+	}
+	return 0.0; // Retorna 0 se o produto não for encontrado
+}
 
 // sobrepoem 1 registo
 public void sobrePorRegisto(ProdutosPNode node, int posTabela)

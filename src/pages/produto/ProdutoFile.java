@@ -10,6 +10,7 @@ import java.util.*;
 
 public class ProdutoFile extends ObjectsFile
 {
+	private static final String FILE_PATH = "produtos.dat"; 
 	
 	public ProdutoFile()
 	{
@@ -36,5 +37,21 @@ public class ProdutoFile extends ObjectsFile
 			JOptionPane.showMessageDialog(null, "Falha ao Salvar um Novo Cliente");
 		}
 	}
+
+	public static List<ProdutoModelo> carregarTodos() {
+        List<ProdutoModelo> produtos = new ArrayList<>();
+
+        try (RandomAccessFile file = new RandomAccessFile(FILE_PATH, "r")) {
+            while (file.getFilePointer() < file.length()) {
+                ProdutoModelo produto = new ProdutoModelo();
+                produto.read(file);
+                produtos.add(produto);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        return produtos;
+    }
 
 }

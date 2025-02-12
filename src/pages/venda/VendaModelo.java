@@ -2,11 +2,12 @@ package src.pages.venda;
 
 import java.io.IOException;
 import java.io.RandomAccessFile;
-import java.io.Serializable;
+import SwingComponents.RegistGeneric;
 import src.components.utils.StringBufferModelo;
+import src.pages.produto.ProdutoFile;
+import src.pages.produto.ProdutosPNode;
 
-public class VendaModelo implements Serializable {
-    private static final long serialVersionUID = 7915799766965423151L;
+public class VendaModelo implements RegistGeneric {
 
     private int id, quantidade;
     private double total;  // Total não estava declarado
@@ -24,7 +25,7 @@ public class VendaModelo implements Serializable {
         this.total = 0;
     }
 
-    public VendaModelo(int id, int quantidade, String dataVenda, String produto, String cliente, String metodoDePagamento, double preco) {
+    public VendaModelo(int id, int quantidade, String dataVenda, String produto, String cliente, String metodoDePagamento, double preco, double total) {
         this.id = id;
         this.quantidade = quantidade;
         this.produto = new StringBufferModelo(produto, 50);
@@ -118,7 +119,7 @@ public class VendaModelo implements Serializable {
                 "Data da Venda: " + getDataVenda() + "\n" +
                 "Método de Pagamento: " + getMetodoDePagamento() + "\n" +
                 "Peco: " + getPreco() +
-                "Total: " + total + "\n";
+                "Total: " + getTotal() + "\n";
     }
 
     public void write(RandomAccessFile stream) {
@@ -149,5 +150,11 @@ public class VendaModelo implements Serializable {
         } catch (IOException ex) {
             ex.printStackTrace();
         }
+    }
+
+     public void salvar() {
+        new VendaFile().salvarDados(this);
+        VendasPNode node = new VendasPNode(this);
+        node.save();
     }
 }

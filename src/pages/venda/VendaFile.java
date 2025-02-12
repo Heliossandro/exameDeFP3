@@ -13,7 +13,7 @@ public class VendaFile extends ObjectsFile
 	
 	public VendaFile()
 	{
-		super("VENDA.DAT", new VendaModelo());
+		super("VENDA.DAT", new VendaModelo() );
 	}
 	
 	public void salvarDados(VendaModelo modelo)

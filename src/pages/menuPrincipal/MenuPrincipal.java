@@ -4,6 +4,9 @@ import javax.swing.*;
 import javax.swing.border.EmptyBorder;
 import src.pages.CategoriaProduto.*;
 import src.pages.produto.*;
+import src.pages.venda.PesquisarPorNomeVenda;
+import src.pages.venda.VendasDadosTable;
+import src.pages.venda.VendasInterface;
 import src.pages.cliente.*;
 import src.pages.fornecedor.*;
 
@@ -14,7 +17,10 @@ import java.awt.event.ActionListener;
 public class MenuPrincipal extends JFrame implements ActionListener {
 
     private JMenuItem adicionarCliente, adicionarProduto, adicionarCategoria, pesquisarClientesPorNome, listarClientes,
-                        listarProduto, pesquisarProduto, adicionarEstoque, listarEstoque, adicionarFornecedor, listarFornecedor, pesquisarFornecedorPeloNome;
+            listarProduto, pesquisarProduto, adicionarFornecedor, listarFornecedor, pesquisarFornecedorPeloNome,
+            adicionarVenda, pesquisarVenda, listarVenda;
+
+    private JButton btnVerProdutos, btnComprarProduto;
 
     public MenuPrincipal() {
         setTitle("Menu Principal - Gestão de Perfumaria");
@@ -26,188 +32,130 @@ public class MenuPrincipal extends JFrame implements ActionListener {
     }
 
     private void configurarLayout() {
-        
         setJMenuBar(criarMenuBar());
 
         // Painel principal
-        JPanel mainPanel = new JPanel();
-        mainPanel.setLayout(new GridLayout(2, 2, 15, 15)); // 2 linhas, 2 colunas, espaçamento
-        mainPanel.setBorder(new EmptyBorder(20, 20, 20, 20)); // Margens internas
-        mainPanel.setBackground(new Color(245, 245, 245)); // Fundo do painel principal
+        JPanel mainPanel = new JPanel(new BorderLayout());
+        mainPanel.setBorder(new EmptyBorder(20, 20, 20, 20));
+        mainPanel.setBackground(new Color(30, 30, 40)); // Cor escura
 
-        // Criar blocos com imagens e botões
-        mainPanel.add(criarBloco("Perfumes para Homens",
-            "C:\\Users\\Heliossandro Afonso\\Documents\\Aulas\\FPIII\\projeto_exame\\src\\components\\images\\perfumesHomens.jpg"));
-        mainPanel.add(criarBloco("Perfumes para Mulheres",
-            "C:\\Users\\Heliossandro Afonso\\Documents\\Aulas\\FPIII\\projeto_exame\\src\\components\\images\\perfumesMulheres.jpg"));
-        mainPanel.add(criarBloco("Cremes",
-            "C:\\Users\\Heliossandro Afonso\\Documents\\Aulas\\FPIII\\projeto_exame\\src\\components\\images\\cremes.jpg"));
-        mainPanel.add(criarBloco("Kits",
-            "C:\\Users\\Heliossandro Afonso\\Documents\\Aulas\\FPIII\\projeto_exame\\src\\components\\images\\conjuntos.jpg"));
+        // Painel central (Bem-vindo + botões)
+        JPanel centerPanel = new JPanel(new GridBagLayout());
+        centerPanel.setOpaque(false);
 
-        add(mainPanel, BorderLayout.CENTER);
+        GridBagConstraints gbc = new GridBagConstraints();
+        gbc.insets = new Insets(10, 10, 10, 10);
+        gbc.gridx = 0;
+        gbc.fill = GridBagConstraints.HORIZONTAL;
+
+        // Mensagem de boas-vindas acima dos botões
+        JLabel welcomeLabel = new JLabel("Bem-vindo à Perfumaria!", JLabel.CENTER);
+        welcomeLabel.setFont(new Font("Arial", Font.BOLD, 24));
+        welcomeLabel.setForeground(new Color(200, 200, 200));
+        gbc.gridy = 0;
+        gbc.gridwidth = 1;
+        centerPanel.add(welcomeLabel, gbc);
+
+        // Botão Ver Produtos
+        gbc.gridy++;
+        btnVerProdutos = new JButton("Ver Produtos");
+        btnVerProdutos.setFont(new Font("Arial", Font.BOLD, 16));
+        btnVerProdutos.setBackground(new Color(70, 130, 180));
+        btnVerProdutos.setForeground(Color.WHITE);
+        btnVerProdutos.addActionListener(this);
+        centerPanel.add(btnVerProdutos, gbc);
+
+        // Botão Comprar Produto
+        gbc.gridy++;
+        btnComprarProduto = new JButton("Comprar Produto");
+        btnComprarProduto.setFont(new Font("Arial", Font.BOLD, 16));
+        btnComprarProduto.setBackground(new Color(34, 139, 34));
+        btnComprarProduto.setForeground(Color.WHITE);
+        btnComprarProduto.addActionListener(this);
+        centerPanel.add(btnComprarProduto, gbc);
+
+        mainPanel.add(centerPanel, BorderLayout.CENTER);
+        add(mainPanel);
+
+        this.revalidate();
+        this.repaint();
     }
 
     private JMenuBar criarMenuBar() {
         JMenuBar menuBar = new JMenuBar();
-        menuBar.setBackground(new Color(30, 144, 255));
-        menuBar.setBorder(new EmptyBorder(5, 5, 5, 5));
 
         JMenu menuProduto = new JMenu("Produto");
-        menuProduto.setForeground(Color.WHITE);
-        
-        adicionarProduto = new JMenuItem("Adicionar Produto");
-        adicionarProduto.addActionListener(this); 
-        menuProduto.add(adicionarProduto); 
-        
-        menuProduto.add(listarProduto = new JMenuItem("Listar Produtos"));
-        listarProduto.addActionListener(this);
+        menuProduto.setIcon(redimensionarImagem("C:\\Users\\Heliossandro Afonso\\Documents\\Aulas\\FPIII\\projeto_exame\\image\\perfume.png", 40, 40));
 
         JMenu menuCliente = new JMenu("Cliente");
-        menuCliente.setForeground(Color.WHITE);
+        menuCliente.setIcon(redimensionarImagem("C:\\Users\\Heliossandro Afonso\\Documents\\Aulas\\FPIII\\projeto_exame\\image\\clientes.png", 40, 40));
 
-        // Adicionar Cliente
-        adicionarCliente = new JMenuItem("Cadastrar Cliente");
-        adicionarCliente.addActionListener(this);
-        menuCliente.add(adicionarCliente);
-          
-        // pesquisar cliente por nome
-        pesquisarClientesPorNome = new JMenuItem("Pesquisar clientes por nome");
-        pesquisarClientesPorNome.addActionListener(this);
-        menuCliente.add(pesquisarClientesPorNome);
-
-        listarClientes = new JMenuItem("Listar Clientes");
-        listarClientes.addActionListener(this);
-        menuCliente.add(listarClientes);
+        JMenu menuFornecedor = new JMenu("Fornecedor");
+        menuFornecedor.setIcon(redimensionarImagem("C:\\Users\\Heliossandro Afonso\\Documents\\Aulas\\FPIII\\projeto_exame\\image\\clientes2.png", 40, 40));
 
         JMenu menuVenda = new JMenu("Venda");
-        menuVenda.setForeground(Color.WHITE);
-        menuVenda.add(new JMenuItem("Registrar Venda"));
-        menuVenda.add(new JMenuItem("Listar Vendas"));
+        menuVenda.setIcon(redimensionarImagem("C:\\Users\\Heliossandro Afonso\\Documents\\Aulas\\FPIII\\projeto_exame\\image\\venda.png", 40, 40));
 
         JMenu menuSobre = new JMenu("Sobre");
-        menuSobre.setForeground(Color.WHITE);
+        menuSobre.setIcon(redimensionarImagem("C:\\Users\\Heliossandro Afonso\\Documents\\Aulas\\FPIII\\projeto_exame\\image\\help.png", 40, 40));
+
+        adicionarProduto = new JMenuItem("Adicionar Produto");
+        listarProduto = new JMenuItem("Listar Produtos");
+        pesquisarProduto = new JMenuItem("Pesquisar Produto");
+        menuProduto.add(adicionarProduto);
+        menuProduto.add(listarProduto);
+        menuProduto.add(pesquisarProduto);
+
+        adicionarCliente = new JMenuItem("Cadastrar Cliente");
+        listarClientes = new JMenuItem("Listar Clientes");
+        pesquisarClientesPorNome = new JMenuItem("Pesquisar Cliente");
+        menuCliente.add(adicionarCliente);
+        menuCliente.add(listarClientes);
+        menuCliente.add(pesquisarClientesPorNome);
+
+        adicionarFornecedor = new JMenuItem("Cadastrar Fornecedor");
+        listarFornecedor = new JMenuItem("Listar Fornecedores");
+        pesquisarFornecedorPeloNome = new JMenuItem("Pesquisar Fornecedor");
+        menuFornecedor.add(adicionarFornecedor);
+        menuFornecedor.add(listarFornecedor);
+        menuFornecedor.add(pesquisarFornecedorPeloNome);
+
+        adicionarVenda = new JMenuItem("Adicionar Venda");
+        listarVenda = new JMenuItem("Listar Vendas");
+        pesquisarVenda = new JMenuItem("Pesquisar Venda");
+        menuVenda.add(adicionarVenda);
+        menuVenda.add(listarVenda);
+        menuVenda.add(pesquisarVenda);
+
         menuSobre.add(new JMenuItem("Sobre o Sistema"));
         menuSobre.add(new JMenuItem("Ajuda"));
 
-        adicionarCategoria = new JMenuItem("Adicionar Categorias de produtos");
-        adicionarCategoria.addActionListener(this);  
-        menuSobre.add(adicionarCategoria); 
-
-        JMenu menuFornecedor = new JMenu("Fornecedor");
-
-        menuFornecedor.add(adicionarFornecedor = new JMenuItem("Cadastrar novo fornecedor"));
-        adicionarFornecedor.addActionListener(this);
-
-        menuFornecedor.add(listarFornecedor = new JMenuItem("Listar fornecedor"));
-        listarFornecedor.addActionListener(this);
-
-        menuFornecedor.add(pesquisarFornecedorPeloNome = new JMenuItem("Pesquisar fornecedor"));
-        adicionarFornecedor.addActionListener(this);
-
         menuBar.add(menuProduto);
         menuBar.add(menuCliente);
-        menuBar.add(menuVenda);
         menuBar.add(menuFornecedor);
+        menuBar.add(menuVenda);
         menuBar.add(menuSobre);
-
-        adicionarProduto.addActionListener(this);
 
         return menuBar;
     }
 
-    public void actionPerformed(ActionEvent evt) {
-        if (evt.getSource() == adicionarProduto) {
-            ProdutoVisao produtoVisao = new ProdutoVisao();
-            produtoVisao.setVisible(true);  
-        }
-
-        if (evt.getSource() == adicionarFornecedor) {
-            new FornecedorVisao();
-        }
-
-        if (evt.getSource() == listarFornecedor) {
-            FornecedoresDadosTable.listarFornecedores();
-        }
-
-        if (evt.getSource() == pesquisarFornecedorPeloNome) {
-            PesquisarPorNomeFornecedor.abrirJanela(this);;
-        }
-
-        if(evt.getSource() == adicionarCategoria){
-            CategoriaProdutosInterface categoriaProdutosInterface = new CategoriaProdutosInterface();
-            categoriaProdutosInterface.setVisible(true);
-        }
-
-        if (evt.getSource() == pesquisarClientesPorNome) {
-            PesquisarPorNomeCliente.abrirJanela(this);
-        }
-        
-        if(evt.getSource() == adicionarCliente){
-            ClienteVisao clienteVisao = new ClienteVisao();
-            clienteVisao.setVisible(true);
-        }
-
-        if(evt.getSource() == listarClientes){
-            ClientesDadosTable.listarClientes();
-        }
-
-        if(evt.getSource() == listarProduto){
-            ProdutosDadosTable.listarProdutos();
-        }
+    private ImageIcon redimensionarImagem(String caminho, int largura, int altura) {
+        ImageIcon icon = new ImageIcon(caminho);
+        Image img = icon.getImage();
+        Image novaImagem = img.getScaledInstance(largura, altura, Image.SCALE_SMOOTH);
+        return new ImageIcon(novaImagem);
     }
 
-    private JPanel criarBloco(String titulo, String caminhoImagem) {
-        // Painel para cada bloco
-        JPanel blocoPanel = new JPanel();
-        blocoPanel.setLayout(new BorderLayout());
-        blocoPanel.setBackground(Color.WHITE);
-        blocoPanel.setBorder(BorderFactory.createCompoundBorder(
-            BorderFactory.createLineBorder(new Color(200, 200, 200), 1),
-            new EmptyBorder(10, 10, 10, 10)
-        ));
-
-        // Adicionar imagem
-        JLabel imagemLabel = new JLabel();
-        ImageIcon icon = new ImageIcon(caminhoImagem);
-        Image imagemRedimensionada = icon.getImage().getScaledInstance(200, 150, Image.SCALE_SMOOTH); // Ajustar tamanho
-        imagemLabel.setIcon(new ImageIcon(imagemRedimensionada));
-        imagemLabel.setHorizontalAlignment(SwingConstants.CENTER);
-
-        // Adicionar botão estilizado
-        JButton botao = new JButton("Ver os " + titulo);
-        botao.setFocusPainted(false);
-        botao.setBackground(new Color(0, 120, 215));
-        botao.setForeground(Color.WHITE);
-        botao.setFont(new Font("Arial", Font.BOLD, 14));
-        botao.setBorder(BorderFactory.createEmptyBorder(10, 15, 10, 15));
-        botao.setCursor(new Cursor(Cursor.HAND_CURSOR));
-
-        // Efeito hover no botão
-        botao.addMouseListener(new java.awt.event.MouseAdapter() {
-            public void mouseEntered(java.awt.event.MouseEvent evt) {
-                botao.setBackground(new Color(0, 100, 180));
-            }
-
-            public void mouseExited(java.awt.event.MouseEvent evt) {
-                botao.setBackground(new Color(0, 120, 215));
-            }
-        });
-
-        botao.addActionListener(e -> JOptionPane.showMessageDialog(this, "Você clicou em: " + titulo));
-
-        // Adicionar título
-        JLabel tituloLabel = new JLabel(titulo, SwingConstants.CENTER);
-        tituloLabel.setFont(new Font("Arial", Font.BOLD, 18));
-        tituloLabel.setForeground(Color.DARK_GRAY);
-        tituloLabel.setBorder(new EmptyBorder(10, 0, 10, 0));
-
-        // Montar o bloco
-        blocoPanel.add(tituloLabel, BorderLayout.NORTH);
-        blocoPanel.add(imagemLabel, BorderLayout.CENTER);
-        blocoPanel.add(botao, BorderLayout.SOUTH);
-
-        return blocoPanel;
+    public void actionPerformed(ActionEvent evt) {
+        if (evt.getSource() == listarProduto) {
+            ProdutosDadosTable.listarProdutos();
+        } else if (evt.getSource() == listarVenda) {
+            VendasDadosTable.listarVendas();
+        } else if (evt.getSource() == btnVerProdutos) {
+            listarProduto.doClick();
+        } else if (evt.getSource() == btnComprarProduto) {
+            adicionarVenda.doClick();
+        }
     }
 
     public static void main(String[] args) {

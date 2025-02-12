@@ -1,10 +1,13 @@
 package src.pages.venda;
 
 import javax.swing.*;
-import Calendario.JTextFieldData;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import javax.swing.event.DocumentEvent;
+import javax.swing.event.DocumentListener;
 import src.pages.cliente.ClientesDadosTable;
 import src.pages.produto.ProdutosDadosTable;
 
@@ -18,18 +21,17 @@ public class VendasInterface extends JFrame {
         getContentPane().add(centro = new PainelCentro(), BorderLayout.CENTER);
         getContentPane().add(sul = new PainelSul(), BorderLayout.SOUTH);
 
-        setSize(400, 350);
+        setSize(400, 400);
         setLocationRelativeTo(null);
         setVisible(true);
     }
 
     class PainelCentro extends JPanel {
-        private JTextField idJTF, quantidadeJTF, precoJTF;
+        private JTextField idJTF, quantidadeJTF, precoJTF, totalJTF, dataJTF;
         private JComboBox<String> produtoJCB, clienteJCB;
-        private JTextFieldData txtData;
 
         public PainelCentro() {
-            setLayout(new GridLayout(7, 2));
+            setLayout(new GridLayout(8, 2));
 
             add(new JLabel("ID"));
             add(idJTF = new JTextField());
@@ -46,17 +48,37 @@ public class VendasInterface extends JFrame {
             add(produtoJCB);
 
             add(new JLabel("Quantidade"));
-            add(quantidadeJTF = new JTextField());
+            quantidadeJTF = new JTextField();
+            add(quantidadeJTF);
 
             add(new JLabel("Preço"));
-            add(precoJTF = new JTextField());
+            precoJTF = new JTextField();
+            add(precoJTF);
+
+            add(new JLabel("Total"));
+            totalJTF = new JTextField();
+            totalJTF.setEditable(false); // O total será calculado automaticamente
+            add(totalJTF);
 
             add(new JLabel("Data"));
-            JPanel painelData = new JPanel(new GridLayout(1, 2));
-            txtData = new JTextFieldData("Data?");
-            painelData.add(txtData.getDTestField());
-            painelData.add(txtData.getDButton());
-            add(painelData);
+            dataJTF = new JTextField(getDataAtual());
+            dataJTF.setEditable(false); // A data será preenchida automaticamente
+            add(dataJTF);
+
+            // Atualiza o total sempre que a quantidade ou o preço forem alterados
+            DocumentListener updateTotalListener = new DocumentListener() {
+                public void insertUpdate(DocumentEvent e) { calcularTotal(); }
+                public void removeUpdate(DocumentEvent e) { calcularTotal(); }
+                public void changedUpdate(DocumentEvent e) { calcularTotal(); }
+            };
+            quantidadeJTF.getDocument().addDocumentListener(updateTotalListener);
+            precoJTF.getDocument().addDocumentListener(updateTotalListener);
+        }
+
+        // Método para obter a data atual no formato correto
+        private String getDataAtual() {
+            SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
+            return sdf.format(new Date());
         }
 
         public int getId() {
@@ -79,8 +101,12 @@ public class VendasInterface extends JFrame {
             }
         }
 
+        public double getTotal() {
+            return getQuantidade() * getPreco();
+        }
+
         public String getData() {
-            return txtData.getDTestField().getText();
+            return dataJTF.getText();
         }
 
         public String getCliente() {
@@ -95,35 +121,25 @@ public class VendasInterface extends JFrame {
             return !(getQuantidade() == 0 || getPreco() == 0.0 || getCliente() == null || getProduto() == null || getData().isEmpty());
         }
 
+        public void calcularTotal() {
+            double total = getTotal();
+            totalJTF.setText(String.format("%.2f", total));
+        }
+
         public void salvar() {
-            try {
-                VendaModelo venda = new VendaModelo(
-                    getId(),
-                    getQuantidade(),
-                    getData(),
-                    getProduto(),
-                    getCliente(),
-                    "Dinheiro",  // Método de pagamento fixo por enquanto
-                    getPreco()
-                );
+            VendaModelo venda = new VendaModelo(
+                getId(),
+                getQuantidade(),
+                getData(),
+                getProduto(),
+                getCliente(),
+                "Dinheiro",
+                getPreco(),
+                getTotal() // Novo campo total sendo enviado
+            );
+            JOptionPane.showMessageDialog(null, venda.toString());
 
-                JOptionPane.showMessageDialog(null, 
-                    "Venda salva com sucesso!\n\n" +
-                    "ID: " + venda.getId() + "\n" +
-                    "Produto: " + venda.getProduto() + "\n" +
-                    "Cliente: " + venda.getCliente() + "\n" +
-                    "Quantidade: " + venda.getQuantidade() + "\n" +
-                    "Preço: " + venda.getPreco() + "\n" +
-                    "Total: " + venda.getTotal() + "\n" +
-                    "Data: " + venda.getDataVenda() + "\n"
-                );
-
-                System.out.println("Enviando os seguintes dados para o banco de dados...");
-                System.out.println(venda.toString());
-
-            } catch (Exception e) {
-                JOptionPane.showMessageDialog(null, "Erro ao salvar os dados: " + e.getMessage(), "Erro", JOptionPane.ERROR_MESSAGE);
-            }
+            venda.salvar();
         }
     }
 

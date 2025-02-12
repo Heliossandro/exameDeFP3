@@ -45,10 +45,10 @@ public class PesquisarPorNomeFornecedor extends JDialog {
             return;
         }
 
-        FornecedoresDadosTable tabelaFornecedors = new FornecedoresDadosTable("Fornecedors.DAT", 100);
+        FornecedoresDadosTable tabelaFornecedores = new FornecedoresDadosTable("fornecedores.DAT", 100);
 
         try {
-            FornecedoresPNode fornecedor = tabelaFornecedors.getNode(nomeProcurado);
+            FornecedoresPNode fornecedor = tabelaFornecedores.getNode(nomeProcurado);
 
             if (fornecedor != null && !fornecedor.isEmptyNode()) {
                 String mensagem = "Fornecedor encontrado:\n" + fornecedor.getModel().toString();
