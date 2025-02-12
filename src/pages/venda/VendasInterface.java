@@ -17,6 +17,14 @@ public class VendasInterface extends JFrame {
 
     public VendasInterface() {
         super("Registrar Vendas");
+        
+         getContentPane().setBackground(new Color(240, 240, 240)); // Fundo claro
+
+        // Adiciona a imagem no topo, redimensionada
+        JLabel imagemLabel = new JLabel(redimensionarImagem("C:/Users/Heliossandro Afonso/Documents/Aulas/FPIII/projeto_exame/image/clientes.png", 100, 100));
+        imagemLabel.setHorizontalAlignment(SwingConstants.CENTER);
+        getContentPane().add(imagemLabel, BorderLayout.NORTH);
+
 
         getContentPane().add(centro = new PainelCentro(), BorderLayout.CENTER);
         getContentPane().add(sul = new PainelSul(), BorderLayout.SOUTH);
@@ -140,24 +148,65 @@ public class VendasInterface extends JFrame {
             JOptionPane.showMessageDialog(null, venda.toString());
 
             venda.salvar();
+            limparCampos();
         }
+
+        public void limparCampos() {
+            idJTF.setText(String.valueOf(new VendaFile().getProximoCodigo())); // Atualiza o ID
+            quantidadeJTF.setText("");
+            precoJTF.setText("");
+            totalJTF.setText("");
+            dataJTF.setText(getDataAtual()); // Atualiza a data
+            clienteJCB.setSelectedIndex(0);
+            produtoJCB.setSelectedIndex(0);
+        }
+        
     }
 
     class PainelSul extends JPanel implements ActionListener {
         private JButton salvarJBT, cancelarJBT;
 
         public PainelSul() {
-            setLayout(new FlowLayout());
-            add(salvarJBT = new JButton("Salvar"));
-            add(cancelarJBT = new JButton("Cancelar"));
+            setLayout(new FlowLayout(FlowLayout.CENTER, 10, 10));
+            setBackground(new Color(220, 220, 220));
+
+            salvarJBT = criarBotao("Salvar", new Color(0, 153, 76), "C:/Users/Heliossandro Afonso/Documents/Aulas/FPIII/projeto_exame/image/certo.png");
+            cancelarJBT = criarBotao("Cancelar", new Color(204, 0, 0), "C:/Users/Heliossandro Afonso/Documents/Aulas/FPIII/projeto_exame/image/nao.png");
+
             salvarJBT.addActionListener(this);
             cancelarJBT.addActionListener(this);
+
+            add(salvarJBT);
+            add(cancelarJBT);
+        }
+
+        private JButton criarBotao(String texto, Color cor, String iconeCaminho) {
+            JButton botao = new JButton(texto, redimensionarImagem(iconeCaminho, 20, 20));
+            botao.setFont(new Font("Arial", Font.BOLD, 14));
+            botao.setForeground(Color.WHITE);
+            botao.setBackground(cor);
+            botao.setBorder(BorderFactory.createEmptyBorder(8, 15, 8, 15));
+            botao.setFocusPainted(false);
+            botao.setHorizontalTextPosition(SwingConstants.RIGHT); // Texto à direita do ícone
+
+            botao.addMouseListener(new java.awt.event.MouseAdapter() {
+                public void mouseEntered(java.awt.event.MouseEvent evt) {
+                    botao.setBackground(cor.darker());
+                }
+                public void mouseExited(java.awt.event.MouseEvent evt) {
+                    botao.setBackground(cor);
+                }
+            });
+            
+            botao.addActionListener(this);
+            return botao;
         }
 
         public void actionPerformed(ActionEvent evt) {
             if (evt.getSource() == salvarJBT) {
                 if (centro.verificarCampos()) {
                     centro.salvar();
+                    
                 } else {
                     JOptionPane.showMessageDialog(null, "Campos vazios ou inválidos!", "Erro", JOptionPane.ERROR_MESSAGE);
                 }
@@ -166,6 +215,13 @@ public class VendasInterface extends JFrame {
             }
         }
     }
+
+    private ImageIcon redimensionarImagem(String caminho, int largura, int altura) {
+        ImageIcon imagemOriginal = new ImageIcon(caminho);
+        Image imagemRedimensionada = imagemOriginal.getImage().getScaledInstance(largura, altura, Image.SCALE_SMOOTH);
+        return new ImageIcon(imagemRedimensionada);
+    }
+
 
     public static void main(String[] args) {
         new VendasInterface();

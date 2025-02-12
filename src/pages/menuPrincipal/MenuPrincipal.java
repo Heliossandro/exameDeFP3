@@ -9,16 +9,18 @@ import src.pages.venda.VendasDadosTable;
 import src.pages.venda.VendasInterface;
 import src.pages.cliente.*;
 import src.pages.fornecedor.*;
+import javax.swing.border.EmptyBorder;
 
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.KeyEvent;
 
 public class MenuPrincipal extends JFrame implements ActionListener {
 
     private JMenuItem adicionarCliente, adicionarProduto, adicionarCategoria, pesquisarClientesPorNome, listarClientes,
             listarProduto, pesquisarProduto, adicionarFornecedor, listarFornecedor, pesquisarFornecedorPeloNome,
-            adicionarVenda, pesquisarVenda, listarVenda;
+            adicionarVenda, pesquisarVenda, listarVenda, sairItem;
 
     private JButton btnVerProdutos, btnComprarProduto;
 
@@ -74,6 +76,8 @@ public class MenuPrincipal extends JFrame implements ActionListener {
         btnComprarProduto.addActionListener(this);
         centerPanel.add(btnComprarProduto, gbc);
 
+        
+
         mainPanel.add(centerPanel, BorderLayout.CENTER);
         add(mainPanel);
 
@@ -100,20 +104,27 @@ public class MenuPrincipal extends JFrame implements ActionListener {
         menuSobre.setIcon(redimensionarImagem("C:\\Users\\Heliossandro Afonso\\Documents\\Aulas\\FPIII\\projeto_exame\\image\\help.png", 40, 40));
 
         adicionarProduto = new JMenuItem("Adicionar Produto");
+        adicionarProduto.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_A, ActionEvent.CTRL_MASK));
         listarProduto = new JMenuItem("Listar Produtos");
         pesquisarProduto = new JMenuItem("Pesquisar Produto");
+        sairItem = new JMenuItem("Sair");
         menuProduto.add(adicionarProduto);
         menuProduto.add(listarProduto);
         menuProduto.add(pesquisarProduto);
+        menuProduto.add(sairItem);
 
         adicionarCliente = new JMenuItem("Cadastrar Cliente");
+        adicionarCliente.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_L, ActionEvent.CTRL_MASK));
         listarClientes = new JMenuItem("Listar Clientes");
         pesquisarClientesPorNome = new JMenuItem("Pesquisar Cliente");
+        sairItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_F4, ActionEvent.CTRL_MASK));
+        sairItem.addActionListener(e -> System.exit(0));
         menuCliente.add(adicionarCliente);
         menuCliente.add(listarClientes);
         menuCliente.add(pesquisarClientesPorNome);
 
         adicionarFornecedor = new JMenuItem("Cadastrar Fornecedor");
+        adicionarFornecedor.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_P, ActionEvent.CTRL_MASK));
         listarFornecedor = new JMenuItem("Listar Fornecedores");
         pesquisarFornecedorPeloNome = new JMenuItem("Pesquisar Fornecedor");
         menuFornecedor.add(adicionarFornecedor);
@@ -127,8 +138,24 @@ public class MenuPrincipal extends JFrame implements ActionListener {
         menuVenda.add(listarVenda);
         menuVenda.add(pesquisarVenda);
 
+        menuSobre.add(adicionarCategoria = new JMenuItem("Adicionar categorias"));
         menuSobre.add(new JMenuItem("Sobre o Sistema"));
         menuSobre.add(new JMenuItem("Ajuda"));
+
+        adicionarProduto.addActionListener(this);
+        listarProduto.addActionListener(this);
+        pesquisarProduto.addActionListener(this);
+        adicionarCliente.addActionListener(this);
+        pesquisarClientesPorNome.addActionListener(this);
+        listarClientes.addActionListener(this);
+        adicionarCategoria.addActionListener(this);
+        adicionarFornecedor.addActionListener(this);
+        listarFornecedor.addActionListener(this);
+        adicionarFornecedor.addActionListener(this);
+        adicionarVenda.addActionListener(this);
+        listarVenda.addActionListener(this);
+        pesquisarVenda.addActionListener(this);
+        adicionarProduto.addActionListener(this); 
 
         menuBar.add(menuProduto);
         menuBar.add(menuCliente);
@@ -147,15 +174,64 @@ public class MenuPrincipal extends JFrame implements ActionListener {
     }
 
     public void actionPerformed(ActionEvent evt) {
-        if (evt.getSource() == listarProduto) {
-            ProdutosDadosTable.listarProdutos();
-        } else if (evt.getSource() == listarVenda) {
-            VendasDadosTable.listarVendas();
-        } else if (evt.getSource() == btnVerProdutos) {
+        if (evt.getSource() == btnVerProdutos) {
             listarProduto.doClick();
         } else if (evt.getSource() == btnComprarProduto) {
             adicionarVenda.doClick();
         }
+
+        if (evt.getSource() == adicionarProduto) {
+            ProdutoVisao produtoVisao = new ProdutoVisao();
+            produtoVisao.setVisible(true);  
+        }
+
+        if (evt.getSource() == pesquisarProduto) {
+            PesquisarPorNomeProduto.abrirJanela(this);;
+        }
+
+        if (evt.getSource() == adicionarVenda) {
+            VendasInterface VendasInterface = new VendasInterface();
+            VendasInterface.setVisible(true);  
+        }
+
+        if (evt.getSource() == pesquisarVenda) {
+            PesquisarPorNomeVenda.abrirJanela(this);;
+        }
+        
+        if (evt.getSource() == listarVenda){
+            VendasDadosTable.listarVendas();
+        }
+
+        if (evt.getSource() == listarFornecedor) {
+            FornecedoresDadosTable.listarFornecedores();
+        }
+
+        if (evt.getSource() == pesquisarFornecedorPeloNome) {
+            PesquisarPorNomeFornecedor.abrirJanela(this);;
+        }
+
+        if(evt.getSource() == adicionarCategoria){
+            CategoriaProdutosInterface categoriaProdutosInterface = new CategoriaProdutosInterface();
+            categoriaProdutosInterface.setVisible(true);
+        }
+
+        if (evt.getSource() == pesquisarClientesPorNome) {
+            PesquisarPorNomeCliente.abrirJanela(this);
+        }
+        
+        if(evt.getSource() == adicionarCliente){
+            ClienteVisao clienteVisao = new ClienteVisao();
+            clienteVisao.setVisible(true);
+        }
+
+        if(evt.getSource() == listarClientes){
+            ClientesDadosTable.listarClientes();
+        }
+
+        if(evt.getSource() == listarProduto){
+            ProdutosDadosTable.listarProdutos();
+        }
+
     }
 
     public static void main(String[] args) {

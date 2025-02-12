@@ -1,8 +1,5 @@
 package src.pages.cliente;
 
-import javax.swing.JTextArea;
-import javax.swing.JScrollPane;
-import javax.swing.JTable;
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
 
@@ -241,12 +238,31 @@ public SaveWriteReadInteface getEmptyNode()
 	return new ClientesPNode();
 }
 
-public static int getNextID()
-{
-	//ClientesDadosTable hashCliente = new ClientesDadosTable("clientes.DAT",100);
-	//return hashCliente.getNextAutoId() + 1;
-	
-	return 1;
+public static int getNextID() {
+    ClientesDadosTable hashCliente = new ClientesDadosTable("clientes.DAT", 100);
+    ClientesPNode tmp = new ClientesPNode();
+    int maxID = 0;
+
+    try {
+        hashCliente.openFile();
+        hashCliente.stream.seek(8); // Pula os metadados do arquivo
+
+        for (int i = 0; i < hashCliente.tableSize; i++) {
+            tmp.read(hashCliente.stream);
+            
+            if (!tmp.isEmptyNode()) {
+                int idAtual = tmp.getModel().getId(); // Obtém o ID do Cliente
+                
+                if (idAtual > maxID) {
+                    maxID = idAtual; // Atualiza o maior ID encontrado
+                }
+            }
+        }
+    } catch (Exception e) {
+        System.out.println("Erro ao buscar o próximo ID: " + e.getMessage());
+    }
+
+    return maxID + 1; // Retorna o próximo ID disponível
 }
 
 /*Listar os dados dos alunos numa comboBox*/

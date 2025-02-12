@@ -15,6 +15,14 @@ public class ProdutoVisao extends JFrame {
     public ProdutoVisao() {
         super("Registrar Novo Produto");
 
+        getContentPane().setBackground(new Color(240, 240, 240)); // Fundo claro
+
+        // Adiciona a imagem no topo, redimensionada
+        JLabel imagemLabel = new JLabel(redimensionarImagem("C:/Users/Heliossandro Afonso/Documents/Aulas/FPIII/projeto_exame/image/perfume.png", 100, 100));
+        imagemLabel.setHorizontalAlignment(SwingConstants.CENTER);
+        getContentPane().add(imagemLabel, BorderLayout.NORTH);
+
+
         setLayout(new BorderLayout(10, 10));
         getContentPane().setBackground(new Color(240, 240, 240));
         getContentPane().add(centro = new PainelCentro(), BorderLayout.CENTER);
@@ -196,7 +204,21 @@ public class ProdutoVisao extends JFrame {
 
             JOptionPane.showMessageDialog(null, "Produto salvo com sucesso!");
             modelo.salvar();
+            limparCampos();
         }
+
+        public void limparCampos() {
+            idJTF.setText("" + new ProdutoFile().getProximoCodigo()); // Gerar novo ID
+            nomeJTF.setText("");
+            marcaJTF.setText("");
+            quantidadeJTF.setText("");
+            precoJTF.setText("");
+            txtData.getDTestField().setText("");
+            fornecedorJCB.setSelectedIndex(0);
+            categoriaJCB.setSelectedIndex(0);
+            observacaoJTF.setText("");
+        }
+        
     }
 
     class PainelSul extends JPanel implements ActionListener {
@@ -206,12 +228,8 @@ public class ProdutoVisao extends JFrame {
             setLayout(new FlowLayout(FlowLayout.CENTER, 10, 10));
             setBackground(new Color(220, 220, 220));
 
-            // Ícones personalizados para os botões
-            ImageIcon salvarIcon = redimensionarIcone("C:\\Users\\Heliossandro Afonso\\Documents\\Aulas\\FPIII\\projeto_exame\\image\\certo.png", 30, 30);
-            ImageIcon cancelarIcon = redimensionarIcone("C:\\Users\\Heliossandro Afonso\\Documents\\Aulas\\FPIII\\projeto_exame\\image\\nao.png", 30, 30);
-
-            salvarJBT = criarBotao("Salvar", salvarIcon);
-            cancelarJBT = criarBotao("Cancelar", cancelarIcon);
+            salvarJBT = criarBotao("Salvar", new Color(0, 153, 76), "C:/Users/Heliossandro Afonso/Documents/Aulas/FPIII/projeto_exame/image/certo.png");
+            cancelarJBT = criarBotao("Cancelar", new Color(204, 0, 0), "C:/Users/Heliossandro Afonso/Documents/Aulas/FPIII/projeto_exame/image/nao.png");
 
             salvarJBT.addActionListener(this);
             cancelarJBT.addActionListener(this);
@@ -220,19 +238,33 @@ public class ProdutoVisao extends JFrame {
             add(cancelarJBT);
         }
 
-
-        private ImageIcon redimensionarIcone(String caminho, int largura, int altura) {
-            ImageIcon icone = new ImageIcon(caminho);
-            Image img = icone.getImage().getScaledInstance(largura, altura, Image.SCALE_SMOOTH);
-            return new ImageIcon(img);
-        }
-
-
         private JButton criarBotao(String texto, ImageIcon icone) {
             JButton botao = new JButton(texto, icone);
             botao.setFont(new Font("Arial", Font.BOLD, 14));
             botao.setPreferredSize(new Dimension(140, 45));
             botao.setFocusPainted(false);
+            return botao;
+        }
+
+        private JButton criarBotao(String texto, Color cor, String iconeCaminho) {
+            JButton botao = new JButton(texto, redimensionarImagem(iconeCaminho, 20, 20));
+            botao.setFont(new Font("Arial", Font.BOLD, 14));
+            botao.setForeground(Color.WHITE);
+            botao.setBackground(cor);
+            botao.setBorder(BorderFactory.createEmptyBorder(8, 15, 8, 15));
+            botao.setFocusPainted(false);
+            botao.setHorizontalTextPosition(SwingConstants.RIGHT); // Texto à direita do ícone
+
+            botao.addMouseListener(new java.awt.event.MouseAdapter() {
+                public void mouseEntered(java.awt.event.MouseEvent evt) {
+                    botao.setBackground(cor.darker());
+                }
+                public void mouseExited(java.awt.event.MouseEvent evt) {
+                    botao.setBackground(cor);
+                }
+            });
+
+            botao.addActionListener(this);
             return botao;
         }
 
@@ -248,6 +280,13 @@ public class ProdutoVisao extends JFrame {
             }
         }
     }
+
+    private ImageIcon redimensionarImagem(String caminho, int largura, int altura) {
+        ImageIcon imagemOriginal = new ImageIcon(caminho);
+        Image imagemRedimensionada = imagemOriginal.getImage().getScaledInstance(largura, altura, Image.SCALE_SMOOTH);
+        return new ImageIcon(imagemRedimensionada);
+    }
+
 
     public static void main(String[] args) {
         SwingUtilities.invokeLater(ProdutoVisao::new);
